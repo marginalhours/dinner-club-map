@@ -86,6 +86,26 @@ async function loadMap() {
             .attr('viewBox', `0 0 ${width} ${height}`)
             .attr('preserveAspectRatio', 'xMidYMid meet');
 
+        // Define hatch pattern for visited countries
+        const defs = svg.append('defs');
+        const pattern = defs.append('pattern')
+            .attr('id', 'visited-hatch')
+            .attr('patternUnits', 'userSpaceOnUse')
+            .attr('width', 6)
+            .attr('height', 6)
+            .attr('patternTransform', 'rotate(45)');
+        pattern.append('rect')
+            .attr('width', 6)
+            .attr('height', 6)
+            .attr('fill', '#dfe6e9');
+        pattern.append('line')
+            .attr('x1', 0)
+            .attr('y1', 0)
+            .attr('x2', 0)
+            .attr('y2', 6)
+            .attr('stroke', '#b2bec3')
+            .attr('stroke-width', 2);
+
         // Group for all map content (zoom transforms this)
         const g = svg.append('g');
 
@@ -128,6 +148,13 @@ async function loadMap() {
             });
 
         svg.call(zoom);
+
+        // On portrait screens, start zoomed in so map fills height
+        if (height > width) {
+            const initialScale = height / width;
+            const initialX = -(width * initialScale - width) / 2;
+            svg.call(zoom.transform, d3.zoomIdentity.translate(initialX, 0).scale(initialScale));
+        }
 
         // Store references for discover feature
         mapState = { svg, g, zoom, path, features: geojson.features, width, height };

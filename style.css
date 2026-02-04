@@ -101,7 +101,7 @@ html, body {
 /* SVG Map Styling */
 .map-container svg .country {
     fill: var(--country-default);
-    stroke: #ffffff;
+    stroke: #636e72;
     stroke-width: 0.5;
     cursor: pointer;
     transition: fill 0.2s ease;
@@ -112,11 +112,11 @@ html, body {
 }
 
 .map-container svg .country.visited {
-    fill: var(--visited-color);
+    fill: url(#visited-hatch);
 }
 
 .map-container svg .country.visited:hover {
-    fill: #f9bf3b;
+    fill: var(--country-hover);
 }
 
 .map-container svg .country.active {
