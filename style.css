@@ -116,16 +116,20 @@ html, body {
 }
 
 .map-container svg .country.visited:hover {
-    fill: var(--country-hover);
+    fill: url(#visited-hatch-hover);
 }
 
 .map-container svg .country.active {
     fill: var(--accent-color);
 }
 
+.map-container svg .country.visited.active {
+    fill: url(#visited-hatch-active);
+}
+
 /* Ocean/background elements */
 .map-container svg .ocean {
-    fill: #a8d4e6;
+    fill: #77d3e7;
     cursor: default;
     pointer-events: none;
 }
@@ -202,6 +206,7 @@ html, body {
 .trips-list {
     display: flex;
     flex-direction: column;
+    align-items: center;
     gap: 1rem;
 }
 
@@ -278,6 +283,16 @@ html, body {
 
 .find-btn:hover {
     background: var(--accent-hover);
+}
+
+.trips-list {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.find-btn-secondary {
+    margin-top: 1.5rem;
 }
 
 /* Overlay */

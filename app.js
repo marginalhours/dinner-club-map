@@ -354,6 +354,28 @@ async function loadMap() {
       .attr("stroke", "#b2bec3")
       .attr("stroke-width", 2);
 
+    // Hover hatch pattern
+    const patternHover = defs
+      .append("pattern")
+      .attr("id", "visited-hatch-hover")
+      .attr("patternUnits", "userSpaceOnUse")
+      .attr("width", 6)
+      .attr("height", 6)
+      .attr("patternTransform", "rotate(45)");
+    patternHover.append("rect").attr("width", 6).attr("height", 6).attr("fill", "#c8d1d6");
+    patternHover.append("line").attr("x1", 0).attr("y1", 0).attr("x2", 0).attr("y2", 6).attr("stroke", "#949ea3").attr("stroke-width", 2);
+
+    // Active hatch pattern
+    const patternActive = defs
+      .append("pattern")
+      .attr("id", "visited-hatch-active")
+      .attr("patternUnits", "userSpaceOnUse")
+      .attr("width", 6)
+      .attr("height", 6)
+      .attr("patternTransform", "rotate(45)");
+    patternActive.append("rect").attr("width", 6).attr("height", 6).attr("fill", "#f5d0c5");
+    patternActive.append("line").attr("x1", 0).attr("y1", 0).attr("x2", 0).attr("y2", 6).attr("stroke", "#e17055").attr("stroke-width", 2);
+
     // Group for all map content (zoom transforms this)
     const g = svg.append("g");
 
@@ -488,7 +510,10 @@ function showSidebar(countryName, countryId, trips) {
             </div>
         `;
   } else {
-    tripsList.innerHTML = trips.map((trip) => createTripCard(trip)).join("");
+    const searchQuery = encodeURIComponent(`${countryName} restaurants in london`);
+    const mapsUrl = `https://www.google.com/maps/search/${searchQuery}`;
+    tripsList.innerHTML = trips.map((trip) => createTripCard(trip)).join("") +
+      `<a href="${mapsUrl}" target="_blank" rel="noopener" class="find-btn find-btn-secondary">Find another restaurant</a>`;
   }
 
   // Show sidebar
