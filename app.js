@@ -47,6 +47,18 @@ async function loadMap() {
         if (!response.ok) throw new Error('Failed to load GeoJSON');
         const geojson = await response.json();
 
+        // Filter out tiny territories that cause click issues
+        const tinyTerritories = new Set([
+            'BMU', 'ABW', 'AIA', 'ASM', 'AND', 'ATG', 'BHR', 'BRB', 'BLZ',
+            'VGB', 'CYM', 'COM', 'COK', 'DMA', 'FLK', 'FRO', 'GIB', 'GRD', 'GLP',
+            'GUM', 'GGY', 'HKG', 'IMN', 'JEY', 'KIR', 'LIE', 'MAC', 'MDV', 'MLT',
+            'MHL', 'MTQ', 'MUS', 'FSM', 'MCO', 'MSR', 'NRU', 'ANT', 'NCL', 'NIU',
+            'NFK', 'MNP', 'PLW', 'PCN', 'PRI', 'REU', 'SHN', 'KNA', 'LCA',
+            'SPM', 'VCT', 'WSM', 'SMR', 'STP', 'SYC', 'SGP', 'SXM', 'SLB', 'TCA',
+            'TKL', 'TON', 'TTO', 'TUV', 'VIR', 'VAT', 'WLF'
+        ]);
+        geojson.features = geojson.features.filter(f => !tinyTerritories.has(f.id));
+
         // Build name mappings from GeoJSON
         geojson.features.forEach(feature => {
             const id = feature.id;
@@ -63,21 +75,25 @@ async function loadMap() {
             .attr('viewBox', `0 0 ${width} ${height}`)
             .attr('preserveAspectRatio', 'xMidYMid meet');
 
-        // Ocean background
-        svg.append('rect')
-            .attr('class', 'ocean')
-            .attr('width', width)
-            .attr('height', height);
+        // Group for all map content (zoom transforms this)
+        const g = svg.append('g');
 
-        // Set up projection - Natural Earth looks nice for world maps
-        // fitSize handles both scale and translate, don't override translate afterwards
+        // Ocean background (large rect so it covers when zoomed out)
+        g.append('rect')
+            .attr('class', 'ocean')
+            .attr('x', -width)
+            .attr('y', -height)
+            .attr('width', width * 3)
+            .attr('height', height * 3);
+
+        // Set up projection
         const projection = d3.geoNaturalEarth1()
             .fitExtent([[10, 10], [width - 10, height - 10]], geojson);
 
         const path = d3.geoPath().projection(projection);
 
         // Draw countries
-        svg.selectAll('path.country')
+        g.selectAll('path.country')
             .data(geojson.features)
             .enter()
             .append('path')
@@ -90,6 +106,16 @@ async function loadMap() {
             .attr('data-id', d => d.id)
             .attr('data-name', d => d.properties.name)
             .on('click', handleCountryClick);
+
+        // Zoom behavior
+        const zoom = d3.zoom()
+            .scaleExtent([1, 12])
+            .wheelDelta((event) => -event.deltaY * 0.002)
+            .on('zoom', (event) => {
+                g.attr('transform', event.transform);
+            });
+
+        svg.call(zoom);
 
     } catch (error) {
         console.error('Error loading map:', error);
