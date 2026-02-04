@@ -2,7 +2,7 @@ trips:
   - country: italy
     date: "2024-03-15"
     restaurant: "Trattoria Roma"
-    location: "Downtown"
+    maps_url: "https://maps.app.goo.gl/oLPeknZvPatLwt9A9"
     rating: 4.5
     notes: "Amazing carbonara! The pasta was perfectly al dente."
 

@@ -238,6 +238,16 @@ html, body {
     gap: 0.25rem;
 }
 
+.trip-location {
+    text-decoration: none;
+    opacity: 0.8;
+    transition: opacity 0.2s;
+}
+
+.trip-location:hover {
+    opacity: 1;
+}
+
 .trip-rating {
     color: var(--accent-color);
     font-weight: 500;
@@ -314,6 +324,200 @@ html, body {
     visibility: visible;
 }
 
+/* Stats Button */
+.stats-btn {
+    position: fixed;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: 50%;
+    border: none;
+    background: var(--sidebar-bg);
+    box-shadow: var(--shadow);
+    font-size: 1.5rem;
+    cursor: pointer;
+    z-index: 100;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.stats-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.15);
+}
+
+/* Modal */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s, visibility 0.3s;
+    z-index: 2000;
+}
+
+.modal-overlay.visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal {
+    background: var(--sidebar-bg);
+    border-radius: 16px;
+    padding: 2rem;
+    max-width: 420px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    position: relative;
+    transform: scale(0.9);
+    transition: transform 0.3s;
+}
+
+.modal-overlay.visible .modal {
+    transform: scale(1);
+}
+
+.modal-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 2rem;
+    height: 2rem;
+    border: none;
+    background: var(--bg-color);
+    border-radius: 50%;
+    font-size: 1.25rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted);
+    transition: background 0.2s, color 0.2s;
+}
+
+.modal-close:hover {
+    background: var(--border-color);
+    color: var(--text-color);
+}
+
+.modal h2 {
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+}
+
+/* Stats Content */
+.stats-overview {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.stats-big-number {
+    font-size: 3rem;
+    font-weight: 700;
+    color: var(--accent-color);
+}
+
+.stats-label {
+    color: var(--text-muted);
+    font-size: 0.875rem;
+}
+
+.stats-percentage {
+    font-size: 1.25rem;
+    color: var(--text-color);
+    margin-top: 0.25rem;
+}
+
+/* Continent breakdown */
+.stats-section {
+    margin-bottom: 1.5rem;
+}
+
+.stats-section h3 {
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    margin-bottom: 0.75rem;
+}
+
+.continent-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.continent-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+}
+
+.continent-name {
+    font-weight: 500;
+}
+
+.continent-stat {
+    color: var(--text-muted);
+    font-size: 0.875rem;
+}
+
+/* Most visited carousel */
+.carousel {
+    display: flex;
+    gap: 0.75rem;
+    overflow-x: auto;
+    padding: 0.5rem 0;
+    scrollbar-width: thin;
+}
+
+.carousel::-webkit-scrollbar {
+    height: 4px;
+}
+
+.carousel::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 2px;
+}
+
+.carousel-item {
+    flex-shrink: 0;
+    background: var(--bg-color);
+    padding: 0.75rem 1rem;
+    border-radius: 12px;
+    text-align: center;
+    min-width: 100px;
+}
+
+.carousel-flag {
+    font-size: 2rem;
+    margin-bottom: 0.25rem;
+}
+
+.carousel-country {
+    font-size: 0.75rem;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.carousel-count {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
 /* Mobile Styles */
 @media (max-width: 600px) {
     .header h1 {
@@ -341,6 +545,19 @@ html, body {
 
     .sidebar-title {
         font-size: 1.5rem;
+    }
+
+    .stats-btn {
+        width: 3rem;
+        height: 3rem;
+        font-size: 1.25rem;
+        bottom: 1rem;
+        right: 1rem;
+    }
+
+    .modal {
+        padding: 1.5rem;
+        max-height: 85vh;
     }
 }
 

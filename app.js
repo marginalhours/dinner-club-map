@@ -5,6 +5,52 @@ let visitedCountries = new Set();
 let countryNameToId = {}; // "italy" -> "ITA"
 let countryIdToName = {}; // "ITA" -> "Italy"
 
+// Country to continent mapping
+const countryToContinent = {
+  // Africa
+  DZA: "Africa", AGO: "Africa", BEN: "Africa", BWA: "Africa", BFA: "Africa", BDI: "Africa",
+  CMR: "Africa", CPV: "Africa", CAF: "Africa", TCD: "Africa", COM: "Africa", COG: "Africa",
+  COD: "Africa", CIV: "Africa", DJI: "Africa", EGY: "Africa", GNQ: "Africa", ERI: "Africa",
+  ETH: "Africa", GAB: "Africa", GMB: "Africa", GHA: "Africa", GIN: "Africa", GNB: "Africa",
+  KEN: "Africa", LSO: "Africa", LBR: "Africa", LBY: "Africa", MDG: "Africa", MWI: "Africa",
+  MLI: "Africa", MRT: "Africa", MAR: "Africa", MOZ: "Africa", NAM: "Africa", NER: "Africa",
+  NGA: "Africa", RWA: "Africa", SEN: "Africa", SLE: "Africa", SOM: "Africa", ZAF: "Africa",
+  SSD: "Africa", SDN: "Africa", SWZ: "Africa", TZA: "Africa", TGO: "Africa", TUN: "Africa",
+  UGA: "Africa", ZMB: "Africa", ZWE: "Africa",
+  // Asia
+  AFG: "Asia", ARM: "Asia", AZE: "Asia", BHR: "Asia", BGD: "Asia", BTN: "Asia", BRN: "Asia",
+  KHM: "Asia", CHN: "Asia", CYP: "Asia", GEO: "Asia", IND: "Asia", IDN: "Asia", IRN: "Asia",
+  IRQ: "Asia", ISR: "Asia", JPN: "Asia", JOR: "Asia", KAZ: "Asia", KWT: "Asia", KGZ: "Asia",
+  LAO: "Asia", LBN: "Asia", MYS: "Asia", MNG: "Asia", MMR: "Asia", NPL: "Asia", PRK: "Asia",
+  OMN: "Asia", PAK: "Asia", PSE: "Asia", PHL: "Asia", QAT: "Asia", SAU: "Asia", KOR: "Asia",
+  LKA: "Asia", SYR: "Asia", TWN: "Asia", TJK: "Asia", THA: "Asia", TLS: "Asia", TUR: "Asia",
+  TKM: "Asia", ARE: "Asia", UZB: "Asia", VNM: "Asia", YEM: "Asia",
+  // Europe
+  ALB: "Europe", AND: "Europe", AUT: "Europe", BLR: "Europe", BEL: "Europe", BIH: "Europe",
+  BGR: "Europe", HRV: "Europe", CZE: "Europe", DNK: "Europe", EST: "Europe", FIN: "Europe",
+  FRA: "Europe", DEU: "Europe", GRC: "Europe", HUN: "Europe", ISL: "Europe", IRL: "Europe",
+  ITA: "Europe", XKX: "Europe", LVA: "Europe", LIE: "Europe", LTU: "Europe", LUX: "Europe",
+  MKD: "Europe", MLT: "Europe", MDA: "Europe", MCO: "Europe", MNE: "Europe", NLD: "Europe",
+  NOR: "Europe", POL: "Europe", PRT: "Europe", ROU: "Europe", RUS: "Europe", SMR: "Europe",
+  SRB: "Europe", SVK: "Europe", SVN: "Europe", ESP: "Europe", SWE: "Europe", CHE: "Europe",
+  UKR: "Europe", GBR: "Europe", VAT: "Europe",
+  // North America
+  ATG: "North America", BHS: "North America", BRB: "North America", BLZ: "North America",
+  CAN: "North America", CRI: "North America", CUB: "North America", DMA: "North America",
+  DOM: "North America", SLV: "North America", GRD: "North America", GTM: "North America",
+  HTI: "North America", HND: "North America", JAM: "North America", MEX: "North America",
+  NIC: "North America", PAN: "North America", KNA: "North America", LCA: "North America",
+  VCT: "North America", TTO: "North America", USA: "North America",
+  // South America
+  ARG: "South America", BOL: "South America", BRA: "South America", CHL: "South America",
+  COL: "South America", ECU: "South America", GUY: "South America", PRY: "South America",
+  PER: "South America", SUR: "South America", URY: "South America", VEN: "South America",
+  // Oceania
+  AUS: "Oceania", FJI: "Oceania", KIR: "Oceania", MHL: "Oceania", FSM: "Oceania",
+  NRU: "Oceania", NZL: "Oceania", PLW: "Oceania", PNG: "Oceania", WSM: "Oceania",
+  SLB: "Oceania", TON: "Oceania", TUV: "Oceania", VUT: "Oceania",
+};
+
 // ISO 3166-1 alpha-3 to alpha-2 mapping (for flag emojis)
 const alpha3to2 = {
   AFG: "AF",
@@ -362,8 +408,19 @@ async function loadMap() {
       .attr("width", 6)
       .attr("height", 6)
       .attr("patternTransform", "rotate(45)");
-    patternHover.append("rect").attr("width", 6).attr("height", 6).attr("fill", "#c8d1d6");
-    patternHover.append("line").attr("x1", 0).attr("y1", 0).attr("x2", 0).attr("y2", 6).attr("stroke", "#949ea3").attr("stroke-width", 2);
+    patternHover
+      .append("rect")
+      .attr("width", 6)
+      .attr("height", 6)
+      .attr("fill", "#c8d1d6");
+    patternHover
+      .append("line")
+      .attr("x1", 0)
+      .attr("y1", 0)
+      .attr("x2", 0)
+      .attr("y2", 6)
+      .attr("stroke", "#949ea3")
+      .attr("stroke-width", 2);
 
     // Active hatch pattern
     const patternActive = defs
@@ -373,8 +430,19 @@ async function loadMap() {
       .attr("width", 6)
       .attr("height", 6)
       .attr("patternTransform", "rotate(45)");
-    patternActive.append("rect").attr("width", 6).attr("height", 6).attr("fill", "#f5d0c5");
-    patternActive.append("line").attr("x1", 0).attr("y1", 0).attr("x2", 0).attr("y2", 6).attr("stroke", "#e17055").attr("stroke-width", 2);
+    patternActive
+      .append("rect")
+      .attr("width", 6)
+      .attr("height", 6)
+      .attr("fill", "#f5d0c5");
+    patternActive
+      .append("line")
+      .attr("x1", 0)
+      .attr("y1", 0)
+      .attr("x2", 0)
+      .attr("y2", 6)
+      .attr("stroke", "#e17055")
+      .attr("stroke-width", 2);
 
     // Group for all map content (zoom transforms this)
     const g = svg.append("g");
@@ -510,9 +578,12 @@ function showSidebar(countryName, countryId, trips) {
             </div>
         `;
   } else {
-    const searchQuery = encodeURIComponent(`${countryName} restaurants in london`);
+    const searchQuery = encodeURIComponent(
+      `${countryName} restaurants in london`,
+    );
     const mapsUrl = `https://www.google.com/maps/search/${searchQuery}`;
-    tripsList.innerHTML = trips.map((trip) => createTripCard(trip)).join("") +
+    tripsList.innerHTML =
+      trips.map((trip) => createTripCard(trip)).join("") +
       `<a href="${mapsUrl}" target="_blank" rel="noopener" class="find-btn find-btn-secondary">Find another restaurant</a>`;
   }
 
@@ -527,7 +598,9 @@ function createTripCard(trip) {
   const rating = trip.rating
     ? `<span class="trip-rating">★ ${trip.rating}</span>`
     : "";
-  const location = trip.location ? `<span>📍 ${trip.location}</span>` : "";
+  const location = trip.maps_url
+    ? `<a href="${escapeHtml(trip.maps_url)}" target="_blank" rel="noopener" class="trip-location">📍 Google Maps</a>`
+    : "";
   const notes = trip.notes
     ? `<div class="trip-notes">"${trip.notes}"</div>`
     : "";
@@ -593,8 +666,111 @@ function setupEventListeners() {
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") {
       closeSidebar();
+      closeStatsModal();
     }
   });
+
+  // Stats modal
+  document.getElementById("stats-btn").addEventListener("click", openStatsModal);
+  document.getElementById("stats-close").addEventListener("click", closeStatsModal);
+  document.getElementById("stats-overlay").addEventListener("click", (e) => {
+    if (e.target.id === "stats-overlay") closeStatsModal();
+  });
+}
+
+// Stats modal
+function openStatsModal() {
+  const overlay = document.getElementById("stats-overlay");
+  const content = document.getElementById("stats-content");
+
+  content.innerHTML = buildStatsContent();
+  overlay.classList.add("visible");
+}
+
+function closeStatsModal() {
+  document.getElementById("stats-overlay").classList.remove("visible");
+}
+
+function buildStatsContent() {
+  const features = mapState.features || [];
+  const totalCountries = features.length;
+  const visitedCount = visitedCountries.size;
+  const percentage = totalCountries > 0 ? ((visitedCount / totalCountries) * 100).toFixed(1) : 0;
+
+  // Continent breakdown
+  const continentStats = {};
+  const continentTotals = {};
+
+  features.forEach((f) => {
+    const continent = countryToContinent[f.id] || "Other";
+    continentTotals[continent] = (continentTotals[continent] || 0) + 1;
+
+    const name = f.properties.name?.toLowerCase();
+    if (visitedCountries.has(name)) {
+      continentStats[continent] = (continentStats[continent] || 0) + 1;
+    }
+  });
+
+  // Most visited countries (by trip count)
+  const tripCounts = {};
+  tripsData.forEach((trip) => {
+    const country = trip.country.toLowerCase();
+    tripCounts[country] = (tripCounts[country] || 0) + 1;
+  });
+
+  const mostVisited = Object.entries(tripCounts)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 10);
+
+  // Build HTML
+  let html = `
+    <div class="stats-overview">
+      <div class="stats-big-number">${visitedCount}/${totalCountries}</div>
+      <div class="stats-label">countries visited</div>
+      <div class="stats-percentage">${percentage}%</div>
+    </div>
+  `;
+
+  // Continent breakdown
+  const continentOrder = ["Europe", "Asia", "Africa", "North America", "South America", "Oceania"];
+  html += `<div class="stats-section"><h3>By Continent</h3><div class="continent-list">`;
+
+  continentOrder.forEach((continent) => {
+    const visited = continentStats[continent] || 0;
+    const total = continentTotals[continent] || 0;
+    if (total > 0) {
+      html += `
+        <div class="continent-row">
+          <span class="continent-name">${continent}</span>
+          <span class="continent-stat">${visited}/${total} (${Math.round((visited / total) * 100)}%)</span>
+        </div>
+      `;
+    }
+  });
+  html += `</div></div>`;
+
+  // Most visited carousel
+  if (mostVisited.length > 0) {
+    html += `<div class="stats-section"><h3>Most Visited</h3><div class="carousel">`;
+
+    mostVisited.forEach(([country, count]) => {
+      const countryId = countryNameToId[country];
+      const displayName = countryIdToName[countryId] || country;
+      const flag = countryId ? getFlag(countryId) : "";
+
+      html += `
+        <div class="carousel-item">
+          <div class="carousel-flag">${flag}</div>
+          <div class="carousel-country">${escapeHtml(displayName)}</div>
+          <div class="carousel-count">${count} visit${count > 1 ? "s" : ""}</div>
+        </div>
+      `;
+    });
+
+    html += `</div></div>`;
+  }
+
+  return html;
 }
 
 // Discover a random unvisited country

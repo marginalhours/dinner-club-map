@@ -32,6 +32,16 @@
         </aside>
 
         <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+        <button class="stats-btn" id="stats-btn" aria-label="View stats">📊</button>
+
+        <div class="modal-overlay" id="stats-overlay">
+            <div class="modal" id="stats-modal">
+                <button class="modal-close" id="stats-close" aria-label="Close">&times;</button>
+                <h2>Stats</h2>
+                <div class="stats-content" id="stats-content"></div>
+            </div>
+        </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js"></script>
