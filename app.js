@@ -5,6 +5,17 @@ let visitedCountries = new Set();
 let countryNameToId = {};  // "italy" -> "ITA"
 let countryIdToName = {};  // "ITA" -> "Italy"
 
+// Map state (for zoom/discover)
+let mapState = {
+    svg: null,
+    g: null,
+    zoom: null,
+    path: null,
+    features: [],
+    width: 0,
+    height: 0
+};
+
 // Initialize the app
 async function init() {
     await loadTrips();
@@ -116,6 +127,9 @@ async function loadMap() {
             });
 
         svg.call(zoom);
+
+        // Store references for discover feature
+        mapState = { svg, g, zoom, path, features: geojson.features, width, height };
 
     } catch (error) {
         console.error('Error loading map:', error);
@@ -239,12 +253,56 @@ function closeSidebar() {
 function setupEventListeners() {
     document.getElementById('sidebar-close').addEventListener('click', closeSidebar);
     document.getElementById('sidebar-overlay').addEventListener('click', closeSidebar);
+    document.getElementById('discover-btn').addEventListener('click', discoverCountry);
 
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
             closeSidebar();
         }
     });
+}
+
+// Discover a random unvisited country
+function discoverCountry() {
+    const { svg, g, zoom, path, features, width, height } = mapState;
+    if (!svg || !features.length) return;
+
+    // Find unvisited countries
+    const unvisited = features.filter(f => {
+        const name = f.properties.name?.toLowerCase();
+        return !visitedCountries.has(name);
+    });
+
+    if (unvisited.length === 0) {
+        alert('You\'ve visited everywhere! Amazing!');
+        return;
+    }
+
+    // Pick random unvisited country
+    const country = unvisited[Math.floor(Math.random() * unvisited.length)];
+    const bounds = path.bounds(country);
+
+    // Calculate zoom transform to fit country
+    const [[x0, y0], [x1, y1]] = bounds;
+    const bWidth = x1 - x0;
+    const bHeight = y1 - y0;
+    const bCenterX = (x0 + x1) / 2;
+    const bCenterY = (y0 + y1) / 2;
+
+    // Scale to fit with padding
+    const scale = Math.min(8, 0.8 / Math.max(bWidth / width, bHeight / height));
+    const translateX = width / 2 - bCenterX * scale;
+    const translateY = height / 2 - bCenterY * scale;
+
+    // Animate zoom
+    svg.transition()
+        .duration(1000)
+        .call(zoom.transform, d3.zoomIdentity.translate(translateX, translateY).scale(scale));
+
+    // Highlight and show sidebar
+    d3.selectAll('path.country').classed('active', false);
+    d3.select(`path[data-id="${country.id}"]`).classed('active', true);
+    showSidebar(country.properties.name, []);
 }
 
 // Add legend to the map

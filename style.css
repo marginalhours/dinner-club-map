@@ -58,6 +58,23 @@ html, body {
     margin-top: 0.125rem;
 }
 
+.discover-btn {
+    margin-top: 0.5rem;
+    padding: 0.4rem 1rem;
+    border: none;
+    background: var(--accent-color);
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 500;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.discover-btn:hover {
+    background: var(--accent-hover);
+}
+
 /* Main Map Area */
 .main {
     width: 100%;
