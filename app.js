@@ -121,6 +121,7 @@ async function loadMap() {
         // Zoom behavior
         const zoom = d3.zoom()
             .scaleExtent([1, 12])
+            .translateExtent([[0, 0], [width, height]])
             .wheelDelta((event) => -event.deltaY * 0.002)
             .on('zoom', (event) => {
                 g.attr('transform', event.transform);
