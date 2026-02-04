@@ -1,0 +1,84 @@
+trips:
+  - country: italy
+    date: "2024-03-15"
+    restaurant: "Trattoria Roma"
+    location: "Downtown"
+    rating: 4.5
+    notes: "Amazing carbonara! The pasta was perfectly al dente."
+
+  - country: italy
+    date: "2024-06-22"
+    restaurant: "Bella Napoli"
+    location: "Little Italy"
+    rating: 4.0
+    notes: "Great wood-fired pizza, cozy atmosphere."
+
+  - country: japan
+    date: "2024-04-20"
+    restaurant: "Sakura Sushi"
+    location: "Midtown"
+    rating: 5.0
+    notes: "Best omakase experience ever. Chef was incredible."
+
+  - country: japan
+    date: "2024-08-10"
+    restaurant: "Ramen House"
+    location: "East Side"
+    rating: 4.0
+    notes: "Rich tonkotsu broth, generous portions."
+
+  - country: mexico
+    date: "2024-05-05"
+    restaurant: "Casa Oaxaca"
+    location: "Old Town"
+    rating: 4.5
+    notes: "Authentic mole negro, fantastic mezcal selection."
+
+  - country: thailand
+    date: "2024-02-14"
+    restaurant: "Golden Elephant"
+    location: "Riverside"
+    rating: 4.0
+    notes: "Pad thai was perfect, great green curry too."
+
+  - country: india
+    date: "2024-07-30"
+    restaurant: "Spice Garden"
+    location: "University District"
+    rating: 4.5
+    notes: "Butter chicken to die for. Naan fresh from the tandoor."
+
+  - country: france
+    date: "2024-01-20"
+    restaurant: "Le Petit Bistro"
+    location: "Downtown"
+    rating: 4.0
+    notes: "Classic coq au vin, excellent wine pairing."
+
+  - country: ethiopia
+    date: "2024-09-12"
+    restaurant: "Addis Ababa Kitchen"
+    location: "West End"
+    rating: 4.5
+    notes: "First time trying Ethiopian food. The injera was amazing!"
+
+  - country: vietnam
+    date: "2024-04-08"
+    restaurant: "Pho 88"
+    location: "Chinatown"
+    rating: 4.0
+    notes: "Steaming hot pho on a rainy day. Perfect comfort food."
+
+  - country: greece
+    date: "2024-06-01"
+    restaurant: "Taverna Mykonos"
+    location: "Harbor District"
+    rating: 4.5
+    notes: "Fresh grilled octopus, incredible tzatziki."
+
+  - country: South Korea
+    date: "2024-08-25"
+    restaurant: "Seoul Kitchen"
+    location: "K-Town"
+    rating: 4.0
+    notes: "KBBQ feast! Great banchan variety."

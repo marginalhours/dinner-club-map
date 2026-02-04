@@ -1,0 +1,243 @@
+// Dinner Club Map App
+
+let tripsData = [];
+let visitedCountries = new Set();
+let countryNameToId = {};  // "italy" -> "ITA"
+let countryIdToName = {};  // "ITA" -> "Italy"
+
+// Initialize the app
+async function init() {
+    await loadTrips();
+    await loadMap();
+    setupEventListeners();
+    addLegend();
+}
+
+// Load trips from YAML
+async function loadTrips() {
+    try {
+        const response = await fetch('data/trips.yaml');
+        if (!response.ok) {
+            console.log('No trips.yaml found, using empty data');
+            return;
+        }
+        const yamlText = await response.text();
+        const data = jsyaml.load(yamlText);
+
+        if (data && data.trips) {
+            tripsData = data.trips;
+            // Build set of visited countries (lowercase names)
+            tripsData.forEach(trip => {
+                visitedCountries.add(trip.country.toLowerCase());
+            });
+        }
+    } catch (error) {
+        console.error('Error loading trips:', error);
+    }
+}
+
+// Load and render the map with D3
+async function loadMap() {
+    const container = document.getElementById('map-container');
+    const width = container.clientWidth || 960;
+    const height = container.clientHeight || 500;
+
+    try {
+        const response = await fetch('data/countries.geojson');
+        if (!response.ok) throw new Error('Failed to load GeoJSON');
+        const geojson = await response.json();
+
+        // Build name mappings from GeoJSON
+        geojson.features.forEach(feature => {
+            const id = feature.id;
+            const name = feature.properties.name;
+            if (id && name) {
+                countryNameToId[name.toLowerCase()] = id;
+                countryIdToName[id] = name;
+            }
+        });
+
+        // Create SVG
+        const svg = d3.select(container)
+            .append('svg')
+            .attr('viewBox', `0 0 ${width} ${height}`)
+            .attr('preserveAspectRatio', 'xMidYMid meet');
+
+        // Ocean background
+        svg.append('rect')
+            .attr('class', 'ocean')
+            .attr('width', width)
+            .attr('height', height);
+
+        // Set up projection - Natural Earth looks nice for world maps
+        // fitSize handles both scale and translate, don't override translate afterwards
+        const projection = d3.geoNaturalEarth1()
+            .fitExtent([[10, 10], [width - 10, height - 10]], geojson);
+
+        const path = d3.geoPath().projection(projection);
+
+        // Draw countries
+        svg.selectAll('path.country')
+            .data(geojson.features)
+            .enter()
+            .append('path')
+            .attr('class', d => {
+                const name = d.properties.name?.toLowerCase();
+                const isVisited = visitedCountries.has(name);
+                return `country${isVisited ? ' visited' : ''}`;
+            })
+            .attr('d', path)
+            .attr('data-id', d => d.id)
+            .attr('data-name', d => d.properties.name)
+            .on('click', handleCountryClick);
+
+    } catch (error) {
+        console.error('Error loading map:', error);
+        container.innerHTML = `
+            <div style="padding: 2rem; text-align: center; color: #636e72;">
+                <p>Failed to load map data.</p>
+                <p style="font-size: 0.875rem;">Make sure countries.geojson is in the data folder.</p>
+            </div>
+        `;
+    }
+}
+
+// Handle country click
+function handleCountryClick(event, d) {
+    const countryName = d.properties.name;
+    const countryId = d.id;
+
+    // Remove previous active state
+    d3.selectAll('path.country').classed('active', false);
+
+    // Add active state to clicked country
+    d3.select(event.currentTarget).classed('active', true);
+
+    // Get trips for this country
+    const trips = getTripsForCountry(countryName);
+
+    // Show sidebar
+    showSidebar(countryName, trips);
+}
+
+// Get trips for a specific country (match by name, case-insensitive)
+function getTripsForCountry(countryName) {
+    const name = countryName.toLowerCase();
+    return tripsData.filter(trip => trip.country.toLowerCase() === name);
+}
+
+// Show the sidebar with trip information
+function showSidebar(countryName, trips) {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebar-overlay');
+    const title = document.getElementById('sidebar-title');
+    const tripsList = document.getElementById('trips-list');
+
+    // Set title
+    title.textContent = countryName;
+
+    // Populate trips
+    if (trips.length === 0) {
+        tripsList.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-state-icon">🍽️</div>
+                <p class="empty-state-text">No visits yet!</p>
+                <p class="empty-state-text" style="margin-top: 0.5rem; font-size: 0.875rem;">
+                    Time to find a great ${countryName} restaurant?
+                </p>
+            </div>
+        `;
+    } else {
+        tripsList.innerHTML = trips.map(trip => createTripCard(trip)).join('');
+    }
+
+    // Show sidebar
+    sidebar.classList.add('open');
+    overlay.classList.add('visible');
+}
+
+// Create HTML for a trip card
+function createTripCard(trip) {
+    const date = trip.date ? formatDate(trip.date) : '';
+    const rating = trip.rating ? `<span class="trip-rating">★ ${trip.rating}</span>` : '';
+    const location = trip.location ? `<span>📍 ${trip.location}</span>` : '';
+    const notes = trip.notes ? `<div class="trip-notes">"${trip.notes}"</div>` : '';
+
+    return `
+        <div class="trip-card">
+            <div class="trip-restaurant">${escapeHtml(trip.restaurant)}</div>
+            <div class="trip-meta">
+                ${date ? `<span>📅 ${date}</span>` : ''}
+                ${location}
+                ${rating}
+            </div>
+            ${notes}
+        </div>
+    `;
+}
+
+// Escape HTML to prevent XSS
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+// Format date for display
+function formatDate(dateStr) {
+    try {
+        const date = new Date(dateStr);
+        return date.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric'
+        });
+    } catch {
+        return dateStr;
+    }
+}
+
+// Close the sidebar
+function closeSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebar-overlay');
+
+    sidebar.classList.remove('open');
+    overlay.classList.remove('visible');
+
+    // Remove active state from country
+    d3.selectAll('path.country').classed('active', false);
+}
+
+// Setup event listeners
+function setupEventListeners() {
+    document.getElementById('sidebar-close').addEventListener('click', closeSidebar);
+    document.getElementById('sidebar-overlay').addEventListener('click', closeSidebar);
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            closeSidebar();
+        }
+    });
+}
+
+// Add legend to the map
+function addLegend() {
+    const main = document.querySelector('.main');
+    const legend = document.createElement('div');
+    legend.className = 'legend';
+    legend.innerHTML = `
+        <div class="legend-item">
+            <div class="legend-color visited"></div>
+            <span>Visited</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color not-visited"></div>
+            <span>Not visited</span>
+        </div>
+    `;
+    main.appendChild(legend);
+}
+
+// Initialize when DOM is ready
+document.addEventListener('DOMContentLoaded', init);

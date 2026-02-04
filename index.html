@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dinner Club Map</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app">
+        <header class="header">
+            <h1>Dinner Club Map</h1>
+            <p class="subtitle">Our culinary journey around the world</p>
+        </header>
+
+        <main class="main">
+            <div class="map-container" id="map-container">
+                <!-- SVG map will be loaded here -->
+            </div>
+        </main>
+
+        <aside class="sidebar" id="sidebar">
+            <button class="sidebar-close" id="sidebar-close" aria-label="Close sidebar">&times;</button>
+            <div class="sidebar-content">
+                <h2 class="sidebar-title" id="sidebar-title">Country</h2>
+                <div class="trips-list" id="trips-list">
+                    <!-- Trips will be populated here -->
+                </div>
+            </div>
+        </aside>
+
+        <div class="sidebar-overlay" id="sidebar-overlay"></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+    <script src="app.js"></script>
+</body>
+</html>
