@@ -99,16 +99,23 @@ html, body {
 }
 
 /* SVG Map Styling */
+.map-container svg .country-shadow {
+    fill: #636e72;
+    stroke: none;
+    pointer-events: none;
+}
+
 .map-container svg .country {
     fill: var(--country-default);
     stroke: #636e72;
     stroke-width: 0.5;
     cursor: pointer;
-    transition: fill 0.2s ease;
+    transition: fill 0.2s ease, transform 0.15s ease;
 }
 
 .map-container svg .country:hover {
     fill: var(--country-hover);
+    transform: translateY(-2px);
 }
 
 .map-container svg .country.visited {
@@ -117,14 +124,17 @@ html, body {
 
 .map-container svg .country.visited:hover {
     fill: url(#visited-hatch-hover);
+    transform: translateY(-2px);
 }
 
 .map-container svg .country.active {
     fill: var(--accent-color);
+    transform: translateY(-2px);
 }
 
 .map-container svg .country.visited.active {
     fill: url(#visited-hatch-active);
+    transform: translateY(-2px);
 }
 
 /* Ocean/background elements */

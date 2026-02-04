@@ -8,47 +8,203 @@ let countryIdToName = {}; // "ITA" -> "Italy"
 // Country to continent mapping
 const countryToContinent = {
   // Africa
-  DZA: "Africa", AGO: "Africa", BEN: "Africa", BWA: "Africa", BFA: "Africa", BDI: "Africa",
-  CMR: "Africa", CPV: "Africa", CAF: "Africa", TCD: "Africa", COM: "Africa", COG: "Africa",
-  COD: "Africa", CIV: "Africa", DJI: "Africa", EGY: "Africa", GNQ: "Africa", ERI: "Africa",
-  ETH: "Africa", GAB: "Africa", GMB: "Africa", GHA: "Africa", GIN: "Africa", GNB: "Africa",
-  KEN: "Africa", LSO: "Africa", LBR: "Africa", LBY: "Africa", MDG: "Africa", MWI: "Africa",
-  MLI: "Africa", MRT: "Africa", MAR: "Africa", MOZ: "Africa", NAM: "Africa", NER: "Africa",
-  NGA: "Africa", RWA: "Africa", SEN: "Africa", SLE: "Africa", SOM: "Africa", ZAF: "Africa",
-  SSD: "Africa", SDN: "Africa", SWZ: "Africa", TZA: "Africa", TGO: "Africa", TUN: "Africa",
-  UGA: "Africa", ZMB: "Africa", ZWE: "Africa",
+  DZA: "Africa",
+  AGO: "Africa",
+  BEN: "Africa",
+  BWA: "Africa",
+  BFA: "Africa",
+  BDI: "Africa",
+  CMR: "Africa",
+  CPV: "Africa",
+  CAF: "Africa",
+  TCD: "Africa",
+  COM: "Africa",
+  COG: "Africa",
+  COD: "Africa",
+  CIV: "Africa",
+  DJI: "Africa",
+  EGY: "Africa",
+  GNQ: "Africa",
+  ERI: "Africa",
+  ETH: "Africa",
+  GAB: "Africa",
+  GMB: "Africa",
+  GHA: "Africa",
+  GIN: "Africa",
+  GNB: "Africa",
+  KEN: "Africa",
+  LSO: "Africa",
+  LBR: "Africa",
+  LBY: "Africa",
+  MDG: "Africa",
+  MWI: "Africa",
+  MLI: "Africa",
+  MRT: "Africa",
+  MAR: "Africa",
+  MOZ: "Africa",
+  NAM: "Africa",
+  NER: "Africa",
+  NGA: "Africa",
+  RWA: "Africa",
+  SEN: "Africa",
+  SLE: "Africa",
+  SOM: "Africa",
+  ZAF: "Africa",
+  SSD: "Africa",
+  SDN: "Africa",
+  SWZ: "Africa",
+  TZA: "Africa",
+  TGO: "Africa",
+  TUN: "Africa",
+  UGA: "Africa",
+  ZMB: "Africa",
+  ZWE: "Africa",
   // Asia
-  AFG: "Asia", ARM: "Asia", AZE: "Asia", BHR: "Asia", BGD: "Asia", BTN: "Asia", BRN: "Asia",
-  KHM: "Asia", CHN: "Asia", CYP: "Asia", GEO: "Asia", IND: "Asia", IDN: "Asia", IRN: "Asia",
-  IRQ: "Asia", ISR: "Asia", JPN: "Asia", JOR: "Asia", KAZ: "Asia", KWT: "Asia", KGZ: "Asia",
-  LAO: "Asia", LBN: "Asia", MYS: "Asia", MNG: "Asia", MMR: "Asia", NPL: "Asia", PRK: "Asia",
-  OMN: "Asia", PAK: "Asia", PSE: "Asia", PHL: "Asia", QAT: "Asia", SAU: "Asia", KOR: "Asia",
-  LKA: "Asia", SYR: "Asia", TWN: "Asia", TJK: "Asia", THA: "Asia", TLS: "Asia", TUR: "Asia",
-  TKM: "Asia", ARE: "Asia", UZB: "Asia", VNM: "Asia", YEM: "Asia",
+  AFG: "Asia",
+  ARM: "Asia",
+  AZE: "Asia",
+  BHR: "Asia",
+  BGD: "Asia",
+  BTN: "Asia",
+  BRN: "Asia",
+  KHM: "Asia",
+  CHN: "Asia",
+  CYP: "Asia",
+  GEO: "Asia",
+  IND: "Asia",
+  IDN: "Asia",
+  IRN: "Asia",
+  IRQ: "Asia",
+  ISR: "Asia",
+  JPN: "Asia",
+  JOR: "Asia",
+  KAZ: "Asia",
+  KWT: "Asia",
+  KGZ: "Asia",
+  LAO: "Asia",
+  LBN: "Asia",
+  MYS: "Asia",
+  MNG: "Asia",
+  MMR: "Asia",
+  NPL: "Asia",
+  PRK: "Asia",
+  OMN: "Asia",
+  PAK: "Asia",
+  PSE: "Asia",
+  PHL: "Asia",
+  QAT: "Asia",
+  SAU: "Asia",
+  KOR: "Asia",
+  LKA: "Asia",
+  SYR: "Asia",
+  TWN: "Asia",
+  TJK: "Asia",
+  THA: "Asia",
+  TLS: "Asia",
+  TUR: "Asia",
+  TKM: "Asia",
+  ARE: "Asia",
+  UZB: "Asia",
+  VNM: "Asia",
+  YEM: "Asia",
   // Europe
-  ALB: "Europe", AND: "Europe", AUT: "Europe", BLR: "Europe", BEL: "Europe", BIH: "Europe",
-  BGR: "Europe", HRV: "Europe", CZE: "Europe", DNK: "Europe", EST: "Europe", FIN: "Europe",
-  FRA: "Europe", DEU: "Europe", GRC: "Europe", HUN: "Europe", ISL: "Europe", IRL: "Europe",
-  ITA: "Europe", XKX: "Europe", LVA: "Europe", LIE: "Europe", LTU: "Europe", LUX: "Europe",
-  MKD: "Europe", MLT: "Europe", MDA: "Europe", MCO: "Europe", MNE: "Europe", NLD: "Europe",
-  NOR: "Europe", POL: "Europe", PRT: "Europe", ROU: "Europe", RUS: "Europe", SMR: "Europe",
-  SRB: "Europe", SVK: "Europe", SVN: "Europe", ESP: "Europe", SWE: "Europe", CHE: "Europe",
-  UKR: "Europe", GBR: "Europe", VAT: "Europe",
+  ALB: "Europe",
+  AND: "Europe",
+  AUT: "Europe",
+  BLR: "Europe",
+  BEL: "Europe",
+  BIH: "Europe",
+  BGR: "Europe",
+  HRV: "Europe",
+  CZE: "Europe",
+  DNK: "Europe",
+  EST: "Europe",
+  FIN: "Europe",
+  FRA: "Europe",
+  DEU: "Europe",
+  GRC: "Europe",
+  HUN: "Europe",
+  ISL: "Europe",
+  IRL: "Europe",
+  ITA: "Europe",
+  XKX: "Europe",
+  LVA: "Europe",
+  LIE: "Europe",
+  LTU: "Europe",
+  LUX: "Europe",
+  MKD: "Europe",
+  MLT: "Europe",
+  MDA: "Europe",
+  MCO: "Europe",
+  MNE: "Europe",
+  NLD: "Europe",
+  NOR: "Europe",
+  POL: "Europe",
+  PRT: "Europe",
+  ROU: "Europe",
+  RUS: "Europe",
+  SMR: "Europe",
+  SRB: "Europe",
+  SVK: "Europe",
+  SVN: "Europe",
+  ESP: "Europe",
+  SWE: "Europe",
+  CHE: "Europe",
+  UKR: "Europe",
+  GBR: "Europe",
+  VAT: "Europe",
   // North America
-  ATG: "North America", BHS: "North America", BRB: "North America", BLZ: "North America",
-  CAN: "North America", CRI: "North America", CUB: "North America", DMA: "North America",
-  DOM: "North America", SLV: "North America", GRD: "North America", GTM: "North America",
-  HTI: "North America", HND: "North America", JAM: "North America", MEX: "North America",
-  NIC: "North America", PAN: "North America", KNA: "North America", LCA: "North America",
-  VCT: "North America", TTO: "North America", USA: "North America",
+  ATG: "North America",
+  BHS: "North America",
+  BRB: "North America",
+  BLZ: "North America",
+  CAN: "North America",
+  CRI: "North America",
+  CUB: "North America",
+  DMA: "North America",
+  DOM: "North America",
+  SLV: "North America",
+  GRD: "North America",
+  GTM: "North America",
+  HTI: "North America",
+  HND: "North America",
+  JAM: "North America",
+  MEX: "North America",
+  NIC: "North America",
+  PAN: "North America",
+  KNA: "North America",
+  LCA: "North America",
+  VCT: "North America",
+  TTO: "North America",
+  USA: "North America",
   // South America
-  ARG: "South America", BOL: "South America", BRA: "South America", CHL: "South America",
-  COL: "South America", ECU: "South America", GUY: "South America", PRY: "South America",
-  PER: "South America", SUR: "South America", URY: "South America", VEN: "South America",
+  ARG: "South America",
+  BOL: "South America",
+  BRA: "South America",
+  CHL: "South America",
+  COL: "South America",
+  ECU: "South America",
+  GUY: "South America",
+  PRY: "South America",
+  PER: "South America",
+  SUR: "South America",
+  URY: "South America",
+  VEN: "South America",
   // Oceania
-  AUS: "Oceania", FJI: "Oceania", KIR: "Oceania", MHL: "Oceania", FSM: "Oceania",
-  NRU: "Oceania", NZL: "Oceania", PLW: "Oceania", PNG: "Oceania", WSM: "Oceania",
-  SLB: "Oceania", TON: "Oceania", TUV: "Oceania", VUT: "Oceania",
+  AUS: "Oceania",
+  FJI: "Oceania",
+  KIR: "Oceania",
+  MHL: "Oceania",
+  FSM: "Oceania",
+  NRU: "Oceania",
+  NZL: "Oceania",
+  PLW: "Oceania",
+  PNG: "Oceania",
+  WSM: "Oceania",
+  SLB: "Oceania",
+  TON: "Oceania",
+  TUV: "Oceania",
+  VUT: "Oceania",
 };
 
 // ISO 3166-1 alpha-3 to alpha-2 mapping (for flag emojis)
@@ -466,6 +622,14 @@ async function loadMap() {
 
     const path = d3.geoPath().projection(projection);
 
+    // Draw shadow layer (beneath main countries)
+    g.selectAll("path.country-shadow")
+      .data(geojson.features)
+      .enter()
+      .append("path")
+      .attr("class", "country-shadow")
+      .attr("d", path);
+
     // Draw countries
     g.selectAll("path.country")
       .data(geojson.features)
@@ -484,7 +648,7 @@ async function loadMap() {
     // Zoom behavior
     const zoom = d3
       .zoom()
-      .scaleExtent([1, 12])
+      .scaleExtent([0.75, 12])
       .translateExtent([
         [0, 0],
         [width, height],
@@ -671,8 +835,12 @@ function setupEventListeners() {
   });
 
   // Stats modal
-  document.getElementById("stats-btn").addEventListener("click", openStatsModal);
-  document.getElementById("stats-close").addEventListener("click", closeStatsModal);
+  document
+    .getElementById("stats-btn")
+    .addEventListener("click", openStatsModal);
+  document
+    .getElementById("stats-close")
+    .addEventListener("click", closeStatsModal);
   document.getElementById("stats-overlay").addEventListener("click", (e) => {
     if (e.target.id === "stats-overlay") closeStatsModal();
   });
@@ -695,7 +863,8 @@ function buildStatsContent() {
   const features = mapState.features || [];
   const totalCountries = features.length;
   const visitedCount = visitedCountries.size;
-  const percentage = totalCountries > 0 ? ((visitedCount / totalCountries) * 100).toFixed(1) : 0;
+  const percentage =
+    totalCountries > 0 ? ((visitedCount / totalCountries) * 100).toFixed(1) : 0;
 
   // Continent breakdown
   const continentStats = {};
@@ -732,7 +901,14 @@ function buildStatsContent() {
   `;
 
   // Continent breakdown
-  const continentOrder = ["Europe", "Asia", "Africa", "North America", "South America", "Oceania"];
+  const continentOrder = [
+    "Europe",
+    "Asia",
+    "Africa",
+    "North America",
+    "South America",
+    "Oceania",
+  ];
   html += `<div class="stats-section"><h3>By Continent</h3><div class="continent-list">`;
 
   continentOrder.forEach((continent) => {

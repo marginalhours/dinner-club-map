@@ -44,5 +44,5 @@ trips:
 ## Feature Ideas
 
 - [ ] Search restaurants
-- [ ] Statistics view (total countries, visits, average rating)
+- [x] Statistics view (total countries, visits, average rating)
 - [ ] Add photos to visits
