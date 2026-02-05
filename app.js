@@ -731,7 +731,7 @@ function showSidebar(countryName, countryId, trips) {
   // Populate trips
   if (trips.length === 0) {
     const searchQuery = encodeURIComponent(
-      `${countryName} restaurants in london`,
+      `${countryName} restaurants near London, UK`,
     );
     const mapsUrl = `https://www.google.com/maps/search/${searchQuery}`;
     tripsList.innerHTML = `
@@ -743,7 +743,7 @@ function showSidebar(countryName, countryId, trips) {
         `;
   } else {
     const searchQuery = encodeURIComponent(
-      `${countryName} restaurants in london`,
+      `${countryName} restaurants near London, UK`,
     );
     const mapsUrl = `https://www.google.com/maps/search/${searchQuery}`;
     tripsList.innerHTML =
@@ -759,9 +759,6 @@ function showSidebar(countryName, countryId, trips) {
 // Create HTML for a trip card
 function createTripCard(trip) {
   const date = trip.date ? formatDate(trip.date) : "";
-  const rating = trip.rating
-    ? `<span class="trip-rating">★ ${trip.rating}</span>`
-    : "";
   const location = trip.maps_url
     ? `<a href="${escapeHtml(trip.maps_url)}" target="_blank" rel="noopener" class="trip-location">📍 Google Maps</a>`
     : "";
@@ -775,7 +772,6 @@ function createTripCard(trip) {
             <div class="trip-meta">
                 ${date ? `<span>📅 ${date}</span>` : ""}
                 ${location}
-                ${rating}
             </div>
             ${notes}
         </div>

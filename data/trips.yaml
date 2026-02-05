@@ -1,84 +1,96 @@
 trips:
   - country: italy
-    date: "2024-03-15"
-    restaurant: "Trattoria Roma"
-    maps_url: "https://maps.app.goo.gl/oLPeknZvPatLwt9A9"
-    rating: 4.5
-    notes: "Amazing carbonara! The pasta was perfectly al dente."
+    date: "2022-10-14"
+    restaurant: "Bancone"
+    maps_url: "https://maps.app.goo.gl/ZgjxQQM9jvUdW2q26"
+    notes: "First outing. Menu coverage: 100%"
 
-  - country: italy
-    date: "2024-06-22"
-    restaurant: "Bella Napoli"
-    location: "Little Italy"
-    rating: 4.0
-    notes: "Great wood-fired pizza, cozy atmosphere."
+  - country: china
+    date: "2022-11-18"
+    restaurant: "Four Seasons"
+    maps_url: https://maps.app.goo.gl/eQDtfARU4gBGC9u88
+    notes: ""
 
-  - country: japan
-    date: "2024-04-20"
-    restaurant: "Sakura Sushi"
-    location: "Midtown"
-    rating: 5.0
-    notes: "Best omakase experience ever. Chef was incredible."
-
-  - country: japan
-    date: "2024-08-10"
-    restaurant: "Ramen House"
-    location: "East Side"
-    rating: 4.0
-    notes: "Rich tonkotsu broth, generous portions."
-
-  - country: mexico
-    date: "2024-05-05"
-    restaurant: "Casa Oaxaca"
-    location: "Old Town"
-    rating: 4.5
-    notes: "Authentic mole negro, fantastic mezcal selection."
-
-  - country: thailand
-    date: "2024-02-14"
-    restaurant: "Golden Elephant"
-    location: "Riverside"
-    rating: 4.0
-    notes: "Pad thai was perfect, great green curry too."
+  - country: united states of america
+    date: "2022-12-16"
+    restaurant: "The Blues Kitchen Brixton"
+    maps_url: https://maps.app.goo.gl/oGu41XwgGTboRpYF9
+    notes: "Tom and Charles send their apologies to the chair"
 
   - country: india
-    date: "2024-07-30"
-    restaurant: "Spice Garden"
-    location: "University District"
-    rating: 4.5
-    notes: "Butter chicken to die for. Naan fresh from the tandoor."
+    date: "2023-02-03"
+    restaurant: Needoo
+    maps_url: https://maps.app.goo.gl/BymM4zt4dhV3pciX9
+    notes: "Tom sends his apologies to the chair (trains)"
 
-  - country: france
-    date: "2024-01-20"
-    restaurant: "Le Petit Bistro"
-    location: "Downtown"
-    rating: 4.0
-    notes: "Classic coq au vin, excellent wine pairing."
+  - country: mexico
+    date: "2023-03-10"
+    restaurant: Frida's
+    maps_url: https://maps.app.goo.gl/QQKtpVzJeveMvR3i8
+    notes: "ft. James Greenwood"
 
-  - country: ethiopia
-    date: "2024-09-12"
-    restaurant: "Addis Ababa Kitchen"
-    location: "West End"
-    rating: 4.5
-    notes: "First time trying Ethiopian food. The injera was amazing!"
+  - country: united kingdom
+    date: "2023-04-16"
+    restaurant: Blacklock
+    maps_url: https://maps.app.goo.gl/CSQCebMfWKUY7KwK6
+    notes: "ft. Iain"
 
-  - country: vietnam
-    date: "2024-04-08"
-    restaurant: "Pho 88"
-    location: "Chinatown"
-    rating: 4.0
-    notes: "Steaming hot pho on a rainy day. Perfect comfort food."
+  - country: belgium
+    date: "2023-05-25"
+    restaurant: Lowlander Grand Cafe
+    maps_url: https://maps.app.goo.gl/1KfNY2YBk4W828Aj6
+    notes: "Tom missed this because of having covid. Also it's shut now."
 
-  - country: greece
-    date: "2024-06-01"
-    restaurant: "Taverna Mykonos"
-    location: "Harbor District"
-    rating: 4.5
-    notes: "Fresh grilled octopus, incredible tzatziki."
+  - country: united states of america
+    date: "2023-07-04"
+    restaurant: Americana
+    maps_url: https://maps.app.goo.gl/X1dstGpW5iguK8PQ7
+    notes: "Free cocktails! VR Headset. Permanently closed."
 
-  - country: South Korea
-    date: "2024-08-25"
-    restaurant: "Seoul Kitchen"
-    location: "K-Town"
-    rating: 4.0
-    notes: "KBBQ feast! Great banchan variety."
+  - country: canada
+    date: "2023-11-24"
+    restaurant: The Maple Leaf
+    maps_url: https://maps.app.goo.gl/GVbhL9FYq19NfKfQ8
+    notes: "Clamato Juice 🦪🍅"
+
+  - country: jamaica
+    date: "2024-02-16"
+    restaurant: Paradise Cove
+    maps_url: https://maps.app.goo.gl/4rVrZM9rwWfwpfF9A
+    notes: "Good cake"
+
+  - country: thailand
+    date: "2024-03-29"
+    restaurant: Thai Square Trafalgar Square
+    maps_url: https://maps.app.goo.gl/5Qs2EcK7VHYa8F8v5
+    notes: "Rare lunch outing. Watched Godzilla x Kong: The New Empire afterwards"
+
+  - country: lebanon
+    date: "2024-05-31"
+    restaurant: Chamisse
+    maps_url: https://maps.app.goo.gl/XZQ1TuQjcJoJDVtK8
+    notes:
+
+  - country: myanmar
+    date: "2024-09-27"
+    restaurant: Lahpet Shoreditch
+    maps_url: https://maps.app.goo.gl/FFt8N6HVWgatMX4L6
+    notes: Watched Manraj gig at City Comedy afterwards
+
+  - country: india
+    date: "2024-11-10"
+    restaurant: Dishoom Battersea
+    maps_url: https://maps.app.goo.gl/vTgYR5HouyqM5zVr6
+    notes:
+
+  - country: united states of america
+    date: "2024-12-15"
+    restaurant: Japes Soho
+    maps_url: https://maps.app.goo.gl/sdi1RNu9hSwXKXks7
+    notes: Chicago-style pizza, so... USA?
+
+  - country: georgia
+    date: "2025-02-22"
+    restaurant: Iberia
+    maps_url: https://maps.app.goo.gl/nKknRdt5sTioDyB16
+    notes: Now called Qarva. Another lunch outing

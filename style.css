@@ -216,15 +216,15 @@ html, body {
 .trips-list {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: 1rem;
 }
 
 .trip-card {
-    background: var(--bg-color);
-    border-radius: 12px;
-    padding: 1.25rem;
-    border: 1px solid var(--border-color);
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.trip-card:last-child {
+    border-bottom: none;
 }
 
 .trip-restaurant {
@@ -267,9 +267,7 @@ html, body {
     font-size: 0.875rem;
     color: var(--text-color);
     font-style: italic;
-    margin-top: 0.75rem;
-    padding-top: 0.75rem;
-    border-top: 1px solid var(--border-color);
+    margin-top: 0.5rem;
 }
 
 /* Empty State */
@@ -305,14 +303,10 @@ html, body {
     background: var(--accent-hover);
 }
 
-.trips-list {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
 .find-btn-secondary {
-    margin-top: 1.5rem;
+    display: block;
+    margin: 1.5rem auto 0;
+    text-align: center;
 }
 
 /* Overlay */
