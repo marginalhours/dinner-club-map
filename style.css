@@ -5,17 +5,25 @@
 }
 
 :root {
-    --bg-color: #faf8f5;
+    /* UI colors */
+    --bg-color: #f9f6f2;
     --text-color: #2d3436;
     --text-muted: #636e72;
-    --border-color: #dfe6e9;
-    --accent-color: #e17055;
-    --accent-hover: #d63031;
-    --visited-color: #fdcb6e;
-    --country-default: #dfe6e9;
-    --country-hover: #b2bec3;
+    --border-color: #e5e0d8;
     --sidebar-bg: #ffffff;
     --shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+
+    /* Accent/interactive */
+    --accent-color: #c17f59;
+    --accent-hover: #a66a48;
+
+    /* Map colors */
+    --ocean-color: #1e3a5f;
+    --country-default: #f2ddc0;
+    --country-hover: #e5d0b3;
+    --country-stroke: #3d5a7a;
+    --country-shadow: #152a45;
+    --visited-color: #d4a574;
 }
 
 html, body {
@@ -56,14 +64,14 @@ html, body {
 
 /* SVG Map Styling */
 .map-container svg .country-shadow {
-    fill: #636e72;
+    fill: var(--country-shadow);
     stroke: none;
     pointer-events: none;
 }
 
 .map-container svg .country {
     fill: var(--country-default);
-    stroke: #636e72;
+    stroke: var(--country-stroke);
     stroke-width: 0.5;
     cursor: pointer;
     transition: fill 0.2s ease, transform 0.15s ease;
@@ -75,11 +83,12 @@ html, body {
 }
 
 .map-container svg .country.visited {
-    fill: url(#visited-hatch);
+    fill: var(--visited-color);
 }
 
 .map-container svg .country.visited:hover {
-    fill: url(#visited-hatch-hover);
+    fill: var(--visited-color);
+    filter: brightness(0.95);
     transform: translateY(-2px);
 }
 
@@ -89,13 +98,13 @@ html, body {
 }
 
 .map-container svg .country.visited.active {
-    fill: url(#visited-hatch-active);
+    fill: var(--accent-color);
     transform: translateY(-2px);
 }
 
 /* Ocean/background elements */
 .map-container svg .ocean {
-    fill: #77d3e7;
+    fill: var(--ocean-color);
     cursor: default;
     pointer-events: none;
 }

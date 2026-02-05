@@ -25,9 +25,8 @@ Edit `data/trips.yaml` to add visits. Entries live under `trips:`.
 | `country`    | yes      | Country name (matched to map)                |
 | `date`       | yes      | Visit date (YYYY-MM-DD)                      |
 | `restaurant` | yes      | Restaurant name                              |
-| `rating`     | no       | 0-5 (decimals ok)                            |
-| `notes`      | no       | Freeform text                                |
 | `maps_url`   | no       | Google Maps link (displays as clickable pin) |
+| `notes`      | no       | Freeform text                                |
 
 Example:
 
@@ -36,12 +35,10 @@ trips:
   - country: Italy
     date: 2024-01-15
     restaurant: Trattoria Roma
-    rating: 4.5
     maps_url: https://maps.google.com/?q=Trattoria+Roma
     notes: Great pasta
 ```
 
 ## Next
 
-- [ ] Fix FABs not showing up on mobile devices
 - [ ] Experiment with other UI themes
