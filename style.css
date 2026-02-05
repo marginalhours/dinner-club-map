@@ -227,6 +227,13 @@ html, body {
     border-bottom: none;
 }
 
+.trip-card.highlighted {
+    background: var(--bg-color);
+    margin: 0 -1rem;
+    padding: 1rem;
+    border-radius: 8px;
+}
+
 .trip-restaurant {
     font-size: 1.125rem;
     font-weight: 600;
@@ -566,6 +573,11 @@ html, body {
 
 .streak-month.active {
     background: var(--accent-color);
+    cursor: pointer;
+}
+
+.streak-month.active:hover {
+    opacity: 0.8;
 }
 
 .streak-month.future {

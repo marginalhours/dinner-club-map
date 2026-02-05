@@ -716,7 +716,7 @@ function getTripsForCountry(countryName) {
 }
 
 // Show the sidebar with trip information
-function showSidebar(countryName, countryId, trips) {
+function showSidebar(countryName, countryId, trips, highlightDate = null) {
   const sidebar = document.getElementById("sidebar");
   const overlay = document.getElementById("sidebar-overlay");
   const title = document.getElementById("sidebar-title");
@@ -747,17 +747,27 @@ function showSidebar(countryName, countryId, trips) {
     );
     const mapsUrl = `https://www.google.com/maps/search/${searchQuery}`;
     tripsList.innerHTML =
-      trips.map((trip) => createTripCard(trip)).join("") +
+      trips.map((trip) => createTripCard(trip, highlightDate)).join("") +
       `<a href="${mapsUrl}" target="_blank" rel="noopener" class="find-btn find-btn-secondary">Find another restaurant</a>`;
   }
 
   // Show sidebar
   sidebar.classList.add("open");
   overlay.classList.add("visible");
+
+  // Scroll to highlighted card if present
+  if (highlightDate) {
+    setTimeout(() => {
+      const highlighted = tripsList.querySelector(".trip-card.highlighted");
+      if (highlighted) {
+        highlighted.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+    }, 100);
+  }
 }
 
 // Create HTML for a trip card
-function createTripCard(trip) {
+function createTripCard(trip, highlightDate = null) {
   const date = trip.date ? formatDate(trip.date) : "";
   const location = trip.maps_url
     ? `<a href="${escapeHtml(trip.maps_url)}" target="_blank" rel="noopener" class="trip-location">📍 Google Maps</a>`
@@ -765,9 +775,10 @@ function createTripCard(trip) {
   const notes = trip.notes
     ? `<div class="trip-notes">"${trip.notes}"</div>`
     : "";
+  const isHighlighted = highlightDate && trip.date === highlightDate;
 
   return `
-        <div class="trip-card">
+        <div class="trip-card${isHighlighted ? " highlighted" : ""}" data-date="${escapeHtml(trip.date || "")}">
             <div class="trip-restaurant">${escapeHtml(trip.restaurant)}</div>
             <div class="trip-meta">
                 ${date ? `<span>📅 ${date}</span>` : ""}
@@ -886,6 +897,18 @@ function openCalendarModal() {
 
   content.innerHTML = buildCalendarContent();
   overlay.classList.add("visible");
+
+  // Add click handlers to active months
+  content.querySelectorAll(".streak-month.active").forEach((cell) => {
+    cell.addEventListener("click", () => {
+      const tripDate = cell.dataset.tripDate;
+      const tripCountry = cell.dataset.tripCountry;
+      if (tripCountry) {
+        closeCalendarModal();
+        openCountryFromCalendar(tripCountry, tripDate);
+      }
+    });
+  });
 }
 
 function closeCalendarModal() {
@@ -895,7 +918,7 @@ function closeCalendarModal() {
 function buildCalendarContent() {
   const monthNames = ["J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D"];
 
-  // Group trips by year and month
+  // Group trips by year and month (store first trip for each month)
   const tripsByYearMonth = {};
   tripsData.forEach((trip) => {
     if (!trip.date) return;
@@ -903,7 +926,9 @@ function buildCalendarContent() {
     const year = date.getFullYear();
     const month = date.getMonth();
     const key = `${year}-${month}`;
-    tripsByYearMonth[key] = true;
+    if (!tripsByYearMonth[key]) {
+      tripsByYearMonth[key] = trip;
+    }
   });
 
   // Get year range
@@ -934,15 +959,21 @@ function buildCalendarContent() {
 
     for (let month = 0; month < 12; month++) {
       const key = `${year}-${month}`;
-      const isActive = tripsByYearMonth[key];
+      const trip = tripsByYearMonth[key];
       const isFuture = year === new Date().getFullYear() && month > new Date().getMonth();
 
       if (!isFuture) {
         totalMonths++;
-        if (isActive) activeMonths++;
+        if (trip) activeMonths++;
       }
 
-      html += `<div class="streak-month${isActive ? " active" : ""}${isFuture ? " future" : ""}"></div>`;
+      if (trip) {
+        const tripDate = trip.date || "";
+        const tripCountry = trip.country || "";
+        html += `<div class="streak-month active" data-trip-date="${escapeHtml(tripDate)}" data-trip-country="${escapeHtml(tripCountry)}"></div>`;
+      } else {
+        html += `<div class="streak-month${isFuture ? " future" : ""}"></div>`;
+      }
     }
 
     html += `</div></div>`;
@@ -951,6 +982,21 @@ function buildCalendarContent() {
   html += `<div class="streak-summary">${activeMonths}/${totalMonths} months (${Math.round((activeMonths / totalMonths) * 100)}%)</div>`;
 
   return html;
+}
+
+function openCountryFromCalendar(countryName, tripDate) {
+  const countryId = countryNameToId[countryName.toLowerCase()];
+
+  // Remove previous active state and set new one
+  d3.selectAll("path.country").classed("active", false);
+  if (countryId) {
+    d3.select(`path[data-id="${countryId}"]`).classed("active", true);
+  }
+
+  // Get trips and show sidebar
+  const displayName = countryIdToName[countryId] || countryName;
+  const trips = getTripsForCountry(displayName);
+  showSidebar(displayName, countryId, trips, tripDate);
 }
 
 function openCountryFromCarousel(countryName, countryId) {
