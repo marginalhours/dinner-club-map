@@ -20,14 +20,14 @@ Then open http://localhost:8080
 
 Edit `data/trips.yaml` to add visits. Entries live under `trips:`.
 
-| Field | Required | Description |
-|-------|----------|-------------|
-| `country` | yes | Country name (matched to map) |
-| `date` | yes | Visit date (YYYY-MM-DD) |
-| `restaurant` | yes | Restaurant name |
-| `rating` | no | 0-5 (decimals ok) |
-| `notes` | no | Freeform text |
-| `maps_url` | no | Google Maps link (displays as clickable pin) |
+| Field        | Required | Description                                  |
+| ------------ | -------- | -------------------------------------------- |
+| `country`    | yes      | Country name (matched to map)                |
+| `date`       | yes      | Visit date (YYYY-MM-DD)                      |
+| `restaurant` | yes      | Restaurant name                              |
+| `rating`     | no       | 0-5 (decimals ok)                            |
+| `notes`      | no       | Freeform text                                |
+| `maps_url`   | no       | Google Maps link (displays as clickable pin) |
 
 Example:
 
@@ -41,8 +41,7 @@ trips:
     notes: Great pasta
 ```
 
-## Feature Ideas
+## Next
 
-- [ ] Search restaurants
-- [x] Statistics view (total countries, visits, average rating)
-- [ ] Add photos to visits
+- [ ] Fix FABs not showing up on mobile devices
+- [ ] Experiment with other UI themes
