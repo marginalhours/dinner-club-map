@@ -94,3 +94,45 @@ trips:
     restaurant: Iberia
     maps_url: https://maps.app.goo.gl/nKknRdt5sTioDyB16
     notes: Now called Qarva. Another lunch outing
+
+  - country: china
+    date: "2025-03-28"
+    restaurant: Glass Garden
+    maps_url: https://maps.app.goo.gl/YsTvg1pBRNVevrU69
+    notes:
+
+  - country: malaysia
+    date: "2025-05-22"
+    restaurant: Champor Champor
+    maps_url: https://maps.app.goo.gl/4b1uKXacfRt4MvK1A
+    notes:
+
+  - country: japan
+    date: "2025-06-26"
+    restaurant: Kanada-Yu
+    maps_url: https://maps.app.goo.gl/YrYh9cktfrUPTrCg7
+    notes:
+
+  - country: australia
+    date: "2025-07-31"
+    restaurant: Timmy Green
+    maps_url: https://maps.app.goo.gl/yKVLP1j7H6q7H6pPA
+    notes:
+
+  - country: united states of america
+    date: "2025-10-23"
+    restaurant: "The Blues Kitchen Brixton"
+    maps_url: https://maps.app.goo.gl/oGu41XwgGTboRpYF9
+    notes: "Blues Kitchen 2: Electric Bluegaloo"
+
+  - country: turkey
+    date: "2025-12-11"
+    restaurant: "Cyprus Mangal"
+    maps_url: https://maps.app.goo.gl/qT1XVDJxokWm5R93A
+    notes: Controversial illness-related reschedule of Alexander the Great (Greek)
+
+  - country: austria
+    date: "2026-01-30"
+    restaurant: Kipferl
+    maps_url: https://maps.app.goo.gl/yMeTsZ7jKchEEsjU8
+    notes:
