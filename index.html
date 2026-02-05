@@ -33,7 +33,18 @@
 
         <div class="sidebar-overlay" id="sidebar-overlay"></div>
 
-        <button class="stats-btn" id="stats-btn" aria-label="View stats">📊</button>
+        <div class="fab-container">
+            <button class="fab-btn" id="calendar-btn" aria-label="View calendar">📅</button>
+            <button class="fab-btn" id="stats-btn" aria-label="View stats">📊</button>
+        </div>
+
+        <div class="modal-overlay" id="calendar-overlay">
+            <div class="modal" id="calendar-modal">
+                <button class="modal-close" id="calendar-close" aria-label="Close">&times;</button>
+                <h2>Streak</h2>
+                <div class="calendar-content" id="calendar-content"></div>
+            </div>
+        </div>
 
         <div class="modal-overlay" id="stats-overlay">
             <div class="modal" id="stats-modal">

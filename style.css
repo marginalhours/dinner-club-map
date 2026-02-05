@@ -329,10 +329,18 @@ html, body {
 }
 
 /* Stats Button */
-.stats-btn {
+/* FAB Buttons */
+.fab-container {
     position: fixed;
     bottom: 1.5rem;
     right: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    z-index: 100;
+}
+
+.fab-btn {
     width: 3.5rem;
     height: 3.5rem;
     border-radius: 50%;
@@ -341,11 +349,10 @@ html, body {
     box-shadow: var(--shadow);
     font-size: 1.5rem;
     cursor: pointer;
-    z-index: 100;
     transition: transform 0.2s, box-shadow 0.2s;
 }
 
-.stats-btn:hover {
+.fab-btn:hover {
     transform: scale(1.1);
     box-shadow: 0 6px 24px rgba(0, 0, 0, 0.15);
 }
@@ -528,6 +535,65 @@ html, body {
     color: var(--text-muted);
 }
 
+/* Calendar Streak */
+.streak-year {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.streak-year-label {
+    font-weight: 600;
+    font-size: 0.875rem;
+    width: 3rem;
+    flex-shrink: 0;
+}
+
+.streak-months {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 4px;
+    flex: 1;
+}
+
+.streak-month {
+    aspect-ratio: 1;
+    border-radius: 4px;
+    background: var(--border-color);
+    position: relative;
+}
+
+.streak-month.active {
+    background: var(--accent-color);
+}
+
+.streak-month.future {
+    opacity: 0.3;
+}
+
+.streak-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.streak-month-header {
+    font-size: 0.625rem;
+    color: var(--text-muted);
+    text-align: center;
+}
+
+.streak-summary {
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border-color);
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.875rem;
+}
+
 /* Mobile Styles */
 @media (max-width: 600px) {
     .header h1 {
@@ -557,12 +623,16 @@ html, body {
         font-size: 1.5rem;
     }
 
-    .stats-btn {
+    .fab-container {
+        bottom: 1rem;
+        right: 1rem;
+        gap: 0.5rem;
+    }
+
+    .fab-btn {
         width: 3rem;
         height: 3rem;
         font-size: 1.25rem;
-        bottom: 1rem;
-        right: 1rem;
     }
 
     .modal {

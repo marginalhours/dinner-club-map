@@ -827,6 +827,7 @@ function setupEventListeners() {
     if (e.key === "Escape") {
       closeSidebar();
       closeStatsModal();
+      closeCalendarModal();
     }
   });
 
@@ -839,6 +840,17 @@ function setupEventListeners() {
     .addEventListener("click", closeStatsModal);
   document.getElementById("stats-overlay").addEventListener("click", (e) => {
     if (e.target.id === "stats-overlay") closeStatsModal();
+  });
+
+  // Calendar modal
+  document
+    .getElementById("calendar-btn")
+    .addEventListener("click", openCalendarModal);
+  document
+    .getElementById("calendar-close")
+    .addEventListener("click", closeCalendarModal);
+  document.getElementById("calendar-overlay").addEventListener("click", (e) => {
+    if (e.target.id === "calendar-overlay") closeCalendarModal();
   });
 }
 
@@ -865,6 +877,80 @@ function openStatsModal() {
 
 function closeStatsModal() {
   document.getElementById("stats-overlay").classList.remove("visible");
+}
+
+// Calendar modal
+function openCalendarModal() {
+  const overlay = document.getElementById("calendar-overlay");
+  const content = document.getElementById("calendar-content");
+
+  content.innerHTML = buildCalendarContent();
+  overlay.classList.add("visible");
+}
+
+function closeCalendarModal() {
+  document.getElementById("calendar-overlay").classList.remove("visible");
+}
+
+function buildCalendarContent() {
+  const monthNames = ["J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D"];
+
+  // Group trips by year and month
+  const tripsByYearMonth = {};
+  tripsData.forEach((trip) => {
+    if (!trip.date) return;
+    const date = new Date(trip.date);
+    const year = date.getFullYear();
+    const month = date.getMonth();
+    const key = `${year}-${month}`;
+    tripsByYearMonth[key] = true;
+  });
+
+  // Get year range
+  const years = [...new Set(tripsData.map((t) => new Date(t.date).getFullYear()))].sort();
+  if (years.length === 0) {
+    return '<div class="empty-state">No trips recorded yet</div>';
+  }
+
+  const minYear = years[0];
+  const maxYear = Math.max(years[years.length - 1], new Date().getFullYear());
+
+  let html = "";
+  let totalMonths = 0;
+  let activeMonths = 0;
+
+  // Month header row
+  html += `<div class="streak-header"><div class="streak-year-label"></div><div class="streak-months">`;
+  monthNames.forEach((m) => {
+    html += `<div class="streak-month-header">${m}</div>`;
+  });
+  html += `</div></div>`;
+
+  // Build year rows (most recent first)
+  for (let year = maxYear; year >= minYear; year--) {
+    html += `<div class="streak-year">`;
+    html += `<div class="streak-year-label">${year}</div>`;
+    html += `<div class="streak-months">`;
+
+    for (let month = 0; month < 12; month++) {
+      const key = `${year}-${month}`;
+      const isActive = tripsByYearMonth[key];
+      const isFuture = year === new Date().getFullYear() && month > new Date().getMonth();
+
+      if (!isFuture) {
+        totalMonths++;
+        if (isActive) activeMonths++;
+      }
+
+      html += `<div class="streak-month${isActive ? " active" : ""}${isFuture ? " future" : ""}"></div>`;
+    }
+
+    html += `</div></div>`;
+  }
+
+  html += `<div class="streak-summary">${activeMonths}/${totalMonths} months (${Math.round((activeMonths / totalMonths) * 100)}%)</div>`;
+
+  return html;
 }
 
 function openCountryFromCarousel(countryName, countryId) {
