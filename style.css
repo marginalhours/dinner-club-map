@@ -31,50 +31,6 @@ html, body {
     position: relative;
 }
 
-/* Header - floating */
-.header {
-    position: absolute;
-    top: 1rem;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 100;
-    padding: 0.75rem 1.5rem;
-    text-align: center;
-    background: rgba(255, 255, 255, 0.9);
-    backdrop-filter: blur(8px);
-    border-radius: 12px;
-    box-shadow: var(--shadow);
-}
-
-.header h1 {
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: var(--text-color);
-}
-
-.subtitle {
-    font-size: 0.75rem;
-    color: var(--text-muted);
-    margin-top: 0.125rem;
-}
-
-.discover-btn {
-    margin-top: 0.5rem;
-    padding: 0.4rem 1rem;
-    border: none;
-    background: var(--accent-color);
-    color: white;
-    font-size: 0.75rem;
-    font-weight: 500;
-    border-radius: 20px;
-    cursor: pointer;
-    transition: background 0.2s;
-}
-
-.discover-btn:hover {
-    background: var(--accent-hover);
-}
-
 /* Main Map Area */
 .main {
     width: 100%;
@@ -608,10 +564,6 @@ html, body {
 
 /* Mobile Styles */
 @media (max-width: 600px) {
-    .header h1 {
-        font-size: 1.25rem;
-    }
-
     .sidebar {
         top: auto;
         bottom: -100%;
