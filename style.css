@@ -10,20 +10,20 @@
     --text-color: #2d3436;
     --text-muted: #636e72;
     --border-color: #e5e0d8;
-    --sidebar-bg: #ffffff;
+    --sidebar-bg: #faf6f0;
     --shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 
     /* Accent/interactive */
-    --accent-color: #c17f59;
-    --accent-hover: #a66a48;
+    --accent-color: #5c6b7a;
+    --accent-hover: #4a5664;
 
     /* Map colors */
-    --ocean-color: #1e3a5f;
-    --country-default: #f2ddc0;
-    --country-hover: #e5d0b3;
-    --country-stroke: #3d5a7a;
-    --country-shadow: #152a45;
-    --visited-color: #d4a574;
+    --ocean-color: #c9d4c5;
+    --country-default: #f4ead5;
+    --country-hover: #e8dcc4;
+    --country-stroke: #a89880;
+    --country-shadow: #d4c9b0;
+    --visited-color: #c4956a;
 }
 
 html, body {
@@ -93,12 +93,12 @@ html, body {
 }
 
 .map-container svg .country.active {
-    fill: var(--accent-color);
+    fill: url(#visited-hatch-active);
     transform: translateY(-2px);
 }
 
 .map-container svg .country.visited.active {
-    fill: var(--accent-color);
+    fill: url(#visited-hatch-active);
     transform: translateY(-2px);
 }
 

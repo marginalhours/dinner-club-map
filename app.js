@@ -220,7 +220,7 @@ async function loadMap() {
       .attr("stroke", "#949ea3")
       .attr("stroke-width", 2);
 
-    // Active hatch pattern
+    // Active hatch pattern (uses visited color family)
     const patternActive = defs
       .append("pattern")
       .attr("id", "visited-hatch-active")
@@ -232,15 +232,15 @@ async function loadMap() {
       .append("rect")
       .attr("width", 6)
       .attr("height", 6)
-      .attr("fill", "#f5d0c5");
+      .attr("fill", "#f4ead5");
     patternActive
       .append("line")
       .attr("x1", 0)
       .attr("y1", 0)
       .attr("x2", 0)
       .attr("y2", 6)
-      .attr("stroke", "#e17055")
-      .attr("stroke-width", 2);
+      .attr("stroke", "#c4956a")
+      .attr("stroke-width", 3.5);
 
     // Group for all map content (zoom transforms this)
     const g = svg.append("g");
@@ -287,10 +287,13 @@ async function loadMap() {
       .attr("data-name", (d) => d.properties.name)
       .on("click", handleCountryClick);
 
-    // Zoom behavior
+    // Zoom behavior (portrait devices get higher min zoom)
+    const isPortrait = height > width;
+    const minZoom = isPortrait ? 1.25 : 0.75;
+
     const zoom = d3
       .zoom()
-      .scaleExtent([0.75, 12])
+      .scaleExtent([minZoom, 12])
       .translateExtent([
         [0, 0],
         [width, height],
@@ -303,8 +306,8 @@ async function loadMap() {
     svg.call(zoom);
 
     // On portrait screens, start zoomed in so map fills height
-    if (height > width) {
-      const initialScale = height / width;
+    if (isPortrait) {
+      const initialScale = Math.max(height / width, minZoom);
       const initialX = -(width * initialScale - width) / 2;
       svg.call(
         zoom.transform,
