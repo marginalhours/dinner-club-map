@@ -4,9 +4,9 @@ Interactive world map for tracking restaurant visits by cuisine/country. Click c
 
 ## Tech Stack
 
-- D3.js (map visualization, zoom/pan)
+- D3.js (map, zoom/pan)
 - Vanilla JS + CSS
-- YAML for trip data
+- YAML data store
 
 ## Local Development
 
@@ -18,15 +18,15 @@ Then open http://localhost:8080
 
 ## YAML Schema
 
-Edit `data/trips.yaml` to add visits. Entries live under `trips:`.
+Edit `data/trips.yaml`:
 
-| Field        | Required | Description                                  |
-| ------------ | -------- | -------------------------------------------- |
-| `country`    | yes      | Country name (matched to map)                |
-| `date`       | yes      | Visit date (YYYY-MM-DD)                      |
-| `restaurant` | yes      | Restaurant name                              |
-| `maps_url`   | no       | Google Maps link (displays as clickable pin) |
-| `notes`      | no       | Freeform text                                |
+| Field        | Required | Description                     |
+| ------------ | -------- | ------------------------------- |
+| `country`    | yes      | Country name (matched to map)   |
+| `date`       | yes      | Visit date (YYYY-MM-DD)         |
+| `restaurant` | yes      | Restaurant name                 |
+| `maps_url`   | no       | Google Maps link (clickable 📍) |
+| `notes`      | no       | Freeform text                   |
 
 Example:
 

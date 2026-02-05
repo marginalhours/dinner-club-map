@@ -231,11 +231,6 @@ html, body {
     opacity: 1;
 }
 
-.trip-rating {
-    color: var(--accent-color);
-    font-weight: 500;
-}
-
 .trip-notes {
     font-size: 0.875rem;
     color: var(--text-color);
