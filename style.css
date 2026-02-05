@@ -22,7 +22,7 @@
     --country-default: #f4ead5;
     --country-hover: #e8dcc4;
     --country-stroke: #a89880;
-    --country-shadow: #d4c9b0;
+    --country-shadow: #b5a58b;
     --visited-color: #c4956a;
 }
 
@@ -98,7 +98,8 @@ html, body {
 }
 
 .map-container svg .country.visited.active {
-    fill: url(#visited-hatch-active);
+    fill: var(--visited-color);
+    filter: brightness(0.92);
     transform: translateY(-2px);
 }
 
@@ -185,7 +186,7 @@ html, body {
 
 .trip-card {
     padding: 1rem 0;
-    border-bottom: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--country-stroke);
 }
 
 .trip-card:last-child {
@@ -255,6 +256,7 @@ html, body {
 }
 
 .empty-state-text {
+    margin: 1rem 0;
     font-size: 1rem;
 }
 
@@ -311,7 +313,7 @@ html, body {
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
-    z-index: 100;
+    z-index: 1001;
     -webkit-transform: translateZ(0);
     transform: translateZ(0);
 }

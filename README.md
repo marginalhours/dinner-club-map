@@ -38,7 +38,3 @@ trips:
     maps_url: https://maps.google.com/?q=Trattoria+Roma
     notes: Great pasta
 ```
-
-## Next
-
-- [ ] Experiment with other UI themes
