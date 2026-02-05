@@ -849,10 +849,34 @@ function openStatsModal() {
 
   content.innerHTML = buildStatsContent();
   overlay.classList.add("visible");
+
+  // Add click handlers to carousel items
+  content.querySelectorAll(".carousel-item").forEach((item) => {
+    item.addEventListener("click", () => {
+      const countryName = item.dataset.country;
+      const countryId = item.dataset.countryId;
+      if (countryName) {
+        closeStatsModal();
+        openCountryFromCarousel(countryName, countryId);
+      }
+    });
+  });
 }
 
 function closeStatsModal() {
   document.getElementById("stats-overlay").classList.remove("visible");
+}
+
+function openCountryFromCarousel(countryName, countryId) {
+  // Remove previous active state and set new one
+  d3.selectAll("path.country").classed("active", false);
+  if (countryId) {
+    d3.select(`path[data-id="${countryId}"]`).classed("active", true);
+  }
+
+  // Get trips and show sidebar
+  const trips = getTripsForCountry(countryName);
+  showSidebar(countryName, countryId, trips);
 }
 
 function buildStatsContent() {
@@ -931,7 +955,7 @@ function buildStatsContent() {
       const flag = countryId ? getFlag(countryId) : "";
 
       html += `
-        <div class="carousel-item">
+        <div class="carousel-item" data-country="${escapeHtml(displayName)}" data-country-id="${countryId || ""}">
           <div class="carousel-flag">${flag}</div>
           <div class="carousel-country">${escapeHtml(displayName)}</div>
           <div class="carousel-count">${count} visit${count > 1 ? "s" : ""}</div>

@@ -502,6 +502,12 @@ html, body {
     border-radius: 12px;
     text-align: center;
     min-width: 100px;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.carousel-item:hover {
+    background: var(--border-color);
 }
 
 .carousel-flag {
