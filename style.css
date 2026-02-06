@@ -95,6 +95,8 @@ html, body {
 .map-container svg .country.active {
     fill: url(#visited-hatch-active);
     transform: translateY(-0.25vmin);
+    stroke: var(--accent-color);
+    stroke-width: 0.10vmin; 
 }
 
 .map-container svg .country.visited.active {

@@ -16,16 +16,8 @@ const PATTERN_SCALE_DIVISOR = 160;
 const SIDEBAR_WIDTH = 400;
 const MOBILE_BREAKPOINT = 600;
 const ZOOM_DURATION = 750;
-const PAN_BOUNDS = { xMin: 0.1, xMax: 0.9, yMin: 0.15, yMax: 0.85 };
-const TINY_TERRITORIES = new Set([
-  "BMU", "ABW", "AIA", "ASM", "AND", "ATG", "BHR", "BRB", "BLZ", "VGB",
-  "CYM", "COM", "COK", "DMA", "FLK", "FRO", "GIB", "GRD", "GLP", "GUM",
-  "GGY", "HKG", "IMN", "JEY", "KIR", "LIE", "MAC", "MDV", "MLT", "MHL",
-  "MTQ", "MUS", "FSM", "MCO", "MSR", "NRU", "ANT", "NCL", "NIU", "NFK",
-  "MNP", "PLW", "PCN", "PRI", "REU", "SHN", "KNA", "LCA", "SPM", "VCT",
-  "WSM", "SMR", "STP", "SYC", "SGP", "SXM", "SLB", "TCA", "TKL", "TON",
-  "TTO", "TUV", "VIR", "VAT", "WLF",
-]);
+const PAN_BOUNDS = { xMin: -0.05, xMax: 1.05, yMin: 0.15, yMax: 0.85 };
+const TINY_TERRITORIES = new Set(["BMU"]); // Sorry Bermuda 🇧🇲
 
 // Calculate zoom configuration for given dimensions
 function getZoomConfig(width, height) {
