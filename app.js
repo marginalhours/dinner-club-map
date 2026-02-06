@@ -158,7 +158,6 @@ async function init() {
   await loadMap();
   setupEventListeners();
   setupResizeHandler();
-  addLegend();
 }
 
 // Load country mappings from JSON files
@@ -833,11 +832,6 @@ function discoverCountry() {
   d3.select(`path[data-id="${country.id}"]`).classed("active", true).raise();
   zoomToCountry(country);
   showSidebar(country.properties.name, country.id, []);
-}
-
-// Add legend to the map (disabled)
-function addLegend() {
-  // Removed - people will get it
 }
 
 // Initialize when DOM is ready
