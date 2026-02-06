@@ -354,7 +354,7 @@ function handleCountryClick(event, d) {
   d3.selectAll("path.country").classed("active", false);
 
   // Add active state to clicked country
-  d3.select(event.currentTarget).classed("active", true);
+  d3.select(event.currentTarget).classed("active", true).raise();
 
   // Zoom to country, positioned for sidebar
   zoomToCountry(d);
@@ -776,7 +776,7 @@ function openCountryFromCalendar(countryName, tripDate) {
   // Remove previous active state and set new one
   d3.selectAll("path.country").classed("active", false);
   if (countryId) {
-    d3.select(`path[data-id="${countryId}"]`).classed("active", true);
+    d3.select(`path[data-id="${countryId}"]`).classed("active", true).raise();
   }
 
   // Get trips and show sidebar
@@ -789,7 +789,7 @@ function openCountryFromCarousel(countryName, countryId) {
   // Remove previous active state and set new one
   d3.selectAll("path.country").classed("active", false);
   if (countryId) {
-    d3.select(`path[data-id="${countryId}"]`).classed("active", true);
+    d3.select(`path[data-id="${countryId}"]`).classed("active", true).raise();
   }
 
   // Get trips and show sidebar
@@ -908,7 +908,7 @@ function discoverCountry() {
 
   // Highlight and show sidebar
   d3.selectAll("path.country").classed("active", false);
-  d3.select(`path[data-id="${country.id}"]`).classed("active", true);
+  d3.select(`path[data-id="${country.id}"]`).classed("active", true).raise();
   zoomToCountry(country);
   showSidebar(country.properties.name, country.id, []);
 }
