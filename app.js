@@ -16,7 +16,7 @@ const PATTERN_SCALE_DIVISOR = 160;
 const SIDEBAR_WIDTH = 400;
 const MOBILE_BREAKPOINT = 600;
 const ZOOM_DURATION = 750;
-const PAN_BOUNDS = { xMin: -0.05, xMax: 1.05, yMin: 0.15, yMax: 0.85 };
+const PAN_BOUNDS = { xMin: -0.05, xMax: 1.05, yMin: -0.05, yMax: 1.05 };
 const TINY_TERRITORIES = new Set(["BMU"]); // Sorry Bermuda 🇧🇲
 
 // Calculate zoom configuration for given dimensions
