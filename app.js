@@ -176,8 +176,8 @@ async function loadMap() {
       .attr("viewBox", `0 0 ${width} ${height}`)
       .attr("preserveAspectRatio", "xMidYMid meet");
 
-    // Scale patterns relative to viewport (base unit ~6 on 960px wide screen)
-    const unit = Math.min(width, height) / 80;
+    // Scale patterns relative to viewport width (map scales with width since it's landscape)
+    const unit = width / 160;
     const strokeWidth = unit / 3;
     const activeStrokeWidth = unit / 1.7;
 
