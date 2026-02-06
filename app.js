@@ -350,11 +350,8 @@ function handleCountryClick(event, d) {
   // Add active state to clicked country
   d3.select(event.currentTarget).classed("active", true);
 
-  // On mobile, pan to show country above the sidebar
-  const isMobile = window.innerWidth <= 600;
-  if (isMobile) {
-    panToCountryForSidebar(d);
-  }
+  // Pan to keep country visible alongside sidebar
+  panToCountryForSidebar(d);
 
   // Get trips for this country
   const trips = getTripsForCountry(countryName);
@@ -363,7 +360,9 @@ function handleCountryClick(event, d) {
   showSidebar(countryName, countryId, trips);
 }
 
-// Pan map so country is visible above the mobile sidebar (which takes 55% of screen)
+// Pan map so country is visible alongside sidebar
+// Portrait (<=600px): sidebar from bottom, center country in upper half
+// Landscape/desktop (>600px): sidebar from left, center country in right half
 function panToCountryForSidebar(feature) {
   const { svg, zoom, path, width, height } = mapState;
   if (!svg) return;
@@ -380,10 +379,19 @@ function panToCountryForSidebar(feature) {
   const screenX = currentTransform.applyX(bCenterX);
   const screenY = currentTransform.applyY(bCenterY);
 
-  // Target: center country in the visible area (top 45% of screen)
-  const visibleHeight = height * 0.45;
-  const targetY = visibleHeight / 2;
-  const targetX = width / 2;
+  // Target position depends on sidebar orientation
+  const isPortrait = window.innerWidth <= 600;
+  let targetX, targetY;
+
+  if (isPortrait) {
+    // Sidebar from bottom: center in upper half
+    targetX = width / 2;
+    targetY = height * 0.25;
+  } else {
+    // Sidebar from left: center in right half
+    targetX = width * 0.75;
+    targetY = height / 2;
+  }
 
   // Calculate new translation
   const newX = currentTransform.x + (targetX - screenX);
