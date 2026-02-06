@@ -10,7 +10,35 @@ let countryToContinent = {};
 let alpha3to2 = {};
 
 // Constants
-const MAX_ZOOM = 15;
+const MAX_ZOOM = 12;
+const PORTRAIT_ZOOM_FACTOR = 1.6;
+const PATTERN_SCALE_DIVISOR = 160;
+const SIDEBAR_WIDTH = 400;
+const MOBILE_BREAKPOINT = 600;
+const ZOOM_DURATION = 750;
+const PAN_BOUNDS = { xMin: 0.1, xMax: 0.9, yMin: 0.15, yMax: 0.85 };
+
+// Calculate zoom configuration for given dimensions
+function getZoomConfig(width, height) {
+  const isPortrait = height > width;
+  const minZoom = isPortrait ? PORTRAIT_ZOOM_FACTOR * (height / width) : 1;
+  return {
+    isPortrait,
+    minZoom,
+    translateExtent: [
+      [width * PAN_BOUNDS.xMin, height * PAN_BOUNDS.yMin],
+      [width * PAN_BOUNDS.xMax, height * PAN_BOUNDS.yMax],
+    ],
+    getInitialTransform: () =>
+      isPortrait
+        ? {
+            scale: minZoom,
+            x: -(width * minZoom - width) / 2,
+            y: -(height * minZoom - height) / 2,
+          }
+        : null,
+  };
+}
 
 // Convert ISO alpha-2 code to flag emoji
 function getFlag(alpha3) {
@@ -179,57 +207,11 @@ async function loadMap() {
       .attr("viewBox", `0 0 ${width} ${height}`)
       .attr("preserveAspectRatio", "xMidYMid meet");
 
-    // Scale patterns relative to viewport width (map scales with width since it's landscape)
-    const unit = width / 160;
-    const strokeWidth = unit / 3;
-    const activeStrokeWidth = unit / 1.7;
+    // Scale pattern relative to viewport width (map scales with width since it's landscape)
+    const unit = width / PATTERN_SCALE_DIVISOR;
 
-    // Define hatch pattern for visited countries
+    // Hatch pattern for selected unvisited countries
     const defs = svg.append("defs");
-    const pattern = defs
-      .append("pattern")
-      .attr("id", "visited-hatch")
-      .attr("patternUnits", "userSpaceOnUse")
-      .attr("width", unit)
-      .attr("height", unit)
-      .attr("patternTransform", "rotate(45)");
-    pattern
-      .append("rect")
-      .attr("width", unit)
-      .attr("height", unit)
-      .attr("fill", "#dfe6e9");
-    pattern
-      .append("line")
-      .attr("x1", 0)
-      .attr("y1", 0)
-      .attr("x2", 0)
-      .attr("y2", unit)
-      .attr("stroke", "#b2bec3")
-      .attr("stroke-width", strokeWidth);
-
-    // Hover hatch pattern
-    const patternHover = defs
-      .append("pattern")
-      .attr("id", "visited-hatch-hover")
-      .attr("patternUnits", "userSpaceOnUse")
-      .attr("width", unit)
-      .attr("height", unit)
-      .attr("patternTransform", "rotate(45)");
-    patternHover
-      .append("rect")
-      .attr("width", unit)
-      .attr("height", unit)
-      .attr("fill", "#c8d1d6");
-    patternHover
-      .append("line")
-      .attr("x1", 0)
-      .attr("y1", 0)
-      .attr("x2", 0)
-      .attr("y2", unit)
-      .attr("stroke", "#949ea3")
-      .attr("stroke-width", strokeWidth);
-
-    // Active hatch pattern (uses visited color family)
     const patternActive = defs
       .append("pattern")
       .attr("id", "visited-hatch-active")
@@ -249,7 +231,7 @@ async function loadMap() {
       .attr("x2", 0)
       .attr("y2", unit)
       .attr("stroke", "#c4956a")
-      .attr("stroke-width", activeStrokeWidth);
+      .attr("stroke-width", unit / 1.7);
 
     // Group for all map content (zoom transforms this)
     const g = svg.append("g");
@@ -296,18 +278,12 @@ async function loadMap() {
       .attr("data-name", (d) => d.properties.name)
       .on("click", handleCountryClick);
 
-    // Zoom behavior (portrait devices get higher min zoom to fill vertical space)
-    const isPortrait = height > width;
-    // Map is ~2:1 aspect ratio. To fill 90% of portrait height, need zoom = 0.9 * height / (width * 0.5)
-    const minZoom = isPortrait ? 1.6 * (height / width) : 1;
-
+    // Zoom behavior
+    const zoomConfig = getZoomConfig(width, height);
     const zoom = d3
       .zoom()
-      .scaleExtent([minZoom, MAX_ZOOM])
-      .translateExtent([
-        [width * 0.1, height * 0.15],
-        [width * 0.9, height * 0.85],
-      ])
+      .scaleExtent([zoomConfig.minZoom, MAX_ZOOM])
+      .translateExtent(zoomConfig.translateExtent)
       .wheelDelta((event) => -event.deltaY * 0.002)
       .on("zoom", (event) => {
         g.attr("transform", event.transform);
@@ -316,14 +292,13 @@ async function loadMap() {
     svg.call(zoom);
 
     // On portrait screens, start at min zoom (map fills height) centered
-    if (isPortrait) {
-      // Center the zoomed map in the viewport
-      const initialScale = minZoom;
-      const initialX = -(width * initialScale - width) / 2;
-      const initialY = -(height * initialScale - height) / 2;
+    const initialTransform = zoomConfig.getInitialTransform();
+    if (initialTransform) {
       svg.call(
         zoom.transform,
-        d3.zoomIdentity.translate(initialX, initialY).scale(initialScale),
+        d3.zoomIdentity
+          .translate(initialTransform.x, initialTransform.y)
+          .scale(initialTransform.scale),
       );
     }
 
@@ -389,8 +364,7 @@ function zoomToCountry(feature) {
   );
 
   // Target position depends on sidebar orientation (match CSS breakpoint)
-  const sidebarFromBottom = window.innerWidth <= 600;
-  const sidebarWidth = 400;
+  const sidebarFromBottom = window.innerWidth <= MOBILE_BREAKPOINT;
   let targetX, targetY;
 
   if (sidebarFromBottom) {
@@ -398,8 +372,8 @@ function zoomToCountry(feature) {
     targetX = width / 2;
     targetY = height * 0.225;
   } else {
-    // Sidebar from left (400px): center in remaining space
-    targetX = sidebarWidth + (width - sidebarWidth) / 2;
+    // Sidebar from left: center in remaining space
+    targetX = SIDEBAR_WIDTH + (width - SIDEBAR_WIDTH) / 2;
     targetY = height / 2;
   }
 
@@ -410,7 +384,7 @@ function zoomToCountry(feature) {
   // Animate zoom + pan
   svg
     .transition()
-    .duration(750)
+    .duration(ZOOM_DURATION)
     .call(
       zoom.transform,
       d3.zoomIdentity.translate(translateX, translateY).scale(scale),
@@ -535,14 +509,11 @@ function setupResizeHandler() {
       // Update SVG viewBox
       svg.attr("viewBox", `0 0 ${newWidth} ${newHeight}`);
 
-      // Update zoom constraints (match loadMap formula)
-      const isPortrait = newHeight > newWidth;
-      const minZoom = isPortrait ? 1.6 * (newHeight / newWidth) : 1;
-
-      zoom.scaleExtent([minZoom, MAX_ZOOM]).translateExtent([
-        [newWidth * 0.1, newHeight * 0.15],
-        [newWidth * 0.9, newHeight * 0.85],
-      ]);
+      // Update zoom constraints
+      const zoomConfig = getZoomConfig(newWidth, newHeight);
+      zoom
+        .scaleExtent([zoomConfig.minZoom, MAX_ZOOM])
+        .translateExtent(zoomConfig.translateExtent);
 
       // Update mapState
       mapState.width = newWidth;
@@ -564,13 +535,13 @@ function setupResizeHandler() {
       g.selectAll("path.country-shadow").attr("d", newPath);
 
       // Reset to initial view for new orientation
-      if (isPortrait) {
-        const initialScale = minZoom;
-        const initialX = -(newWidth * initialScale - newWidth) / 2;
-        const initialY = -(newHeight * initialScale - newHeight) / 2;
+      const initialTransform = zoomConfig.getInitialTransform();
+      if (initialTransform) {
         svg.call(
           zoom.transform,
-          d3.zoomIdentity.translate(initialX, initialY).scale(initialScale),
+          d3.zoomIdentity
+            .translate(initialTransform.x, initialTransform.y)
+            .scale(initialTransform.scale),
         );
       } else {
         svg.call(zoom.transform, d3.zoomIdentity);
