@@ -117,7 +117,7 @@ trips:
     date: "2025-07-31"
     restaurant: Timmy Green
     maps_url: https://maps.app.goo.gl/yKVLP1j7H6q7H6pPA
-    notes:
+    notes: Brunch
 
   - country: united states of america
     date: "2025-10-23"
