@@ -308,7 +308,7 @@ async function loadMap() {
 
     // On portrait screens, start zoomed and centered on Western Europe
     if (isPortrait) {
-      const initialScale = Math.max(height / width, minZoom) * 1.2; // Slightly more zoom
+      const initialScale = Math.max(height / width, minZoom) * 1.25; // Slightly more zoom
       const initialX = -(width * initialScale - width) / 2;
       // Shift up to center on Europe (roughly 20% up from center)
       const initialY = -(height * 0.15);
@@ -529,12 +529,10 @@ function setupResizeHandler() {
       const isPortrait = newHeight > newWidth;
       const minZoom = isPortrait ? 1.25 : 1;
 
-      zoom
-        .scaleExtent([minZoom, 12])
-        .translateExtent([
-          [0, 0],
-          [newWidth, newHeight],
-        ]);
+      zoom.scaleExtent([minZoom, 12]).translateExtent([
+        [0, 0],
+        [newWidth, newHeight],
+      ]);
 
       // Update mapState
       mapState.width = newWidth;
