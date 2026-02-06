@@ -302,8 +302,8 @@ async function loadMap() {
       .zoom()
       .scaleExtent([minZoom, 12])
       .translateExtent([
-        [0, 0],
-        [width, height],
+        [width * 0.1, height * 0.15],
+        [width * 0.9, height * 0.85],
       ])
       .wheelDelta((event) => -event.deltaY * 0.002)
       .on("zoom", (event) => {
@@ -534,8 +534,8 @@ function setupResizeHandler() {
       const minZoom = isPortrait ? 1.6 * (newHeight / newWidth) : 1;
 
       zoom.scaleExtent([minZoom, 12]).translateExtent([
-        [0, 0],
-        [newWidth, newHeight],
+        [newWidth * 0.1, newHeight * 0.15],
+        [newWidth * 0.9, newHeight * 0.85],
       ]);
 
       // Update mapState
