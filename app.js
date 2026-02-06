@@ -469,14 +469,10 @@ function setupResizeHandler() {
       mapState.height = newHeight;
 
       // Re-fit projection and redraw paths
-      const projection = d3.geoNaturalEarth1().fitExtent(
-        [
-          [10, 10],
-          [newWidth - 10, newHeight - 10],
-        ],
-        { type: "FeatureCollection", features },
-      );
-      const newPath = d3.geoPath().projection(projection);
+      const newPath = createProjection(newWidth, newHeight, {
+        type: "FeatureCollection",
+        features,
+      });
       mapState.path = newPath;
 
       // Update all country paths
