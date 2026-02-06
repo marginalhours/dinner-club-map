@@ -293,9 +293,10 @@ async function loadMap() {
       .attr("data-name", (d) => d.properties.name)
       .on("click", handleCountryClick);
 
-    // Zoom behavior (portrait devices get higher min zoom)
+    // Zoom behavior (portrait devices get higher min zoom to fill vertical space)
     const isPortrait = height > width;
-    const minZoom = isPortrait ? 1.25 : 1;
+    // Map is ~2:1 aspect ratio. To fill 90% of portrait height, need zoom = 0.9 * height / (width * 0.5)
+    const minZoom = isPortrait ? 1.6 * (height / width) : 1;
 
     const zoom = d3
       .zoom()
@@ -311,12 +312,12 @@ async function loadMap() {
 
     svg.call(zoom);
 
-    // On portrait screens, start zoomed and centered on Western Europe
+    // On portrait screens, start at min zoom (map fills height) centered
     if (isPortrait) {
-      const initialScale = Math.max(height / width, minZoom) * 1.25; // Slightly more zoom
+      // Center the zoomed map in the viewport
+      const initialScale = minZoom;
       const initialX = -(width * initialScale - width) / 2;
-      // Shift up to center on Europe (roughly 20% up from center)
-      const initialY = -(height * 0.15);
+      const initialY = -(height * initialScale - height) / 2;
       svg.call(
         zoom.transform,
         d3.zoomIdentity.translate(initialX, initialY).scale(initialScale),
@@ -528,9 +529,9 @@ function setupResizeHandler() {
       // Update SVG viewBox
       svg.attr("viewBox", `0 0 ${newWidth} ${newHeight}`);
 
-      // Update zoom constraints
+      // Update zoom constraints (match loadMap formula)
       const isPortrait = newHeight > newWidth;
-      const minZoom = isPortrait ? 3 : 1;
+      const minZoom = isPortrait ? 1.6 * (newHeight / newWidth) : 1;
 
       zoom.scaleExtent([minZoom, 12]).translateExtent([
         [0, 0],
@@ -558,9 +559,9 @@ function setupResizeHandler() {
 
       // Reset to initial view for new orientation
       if (isPortrait) {
-        const initialScale = Math.max(newHeight / newWidth, minZoom) * 1.2;
+        const initialScale = minZoom;
         const initialX = -(newWidth * initialScale - newWidth) / 2;
-        const initialY = -(newHeight * 0.15);
+        const initialY = -(newHeight * initialScale - newHeight) / 2;
         svg.call(
           zoom.transform,
           d3.zoomIdentity.translate(initialX, initialY).scale(initialScale),
