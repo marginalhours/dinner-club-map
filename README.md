@@ -38,3 +38,7 @@ trips:
     maps_url: https://maps.google.com/?q=Trattoria+Roma
     notes: Great pasta
 ```
+
+## Todo
+
+- [ ] Add back in missing tiny countries (that don't break the map)

@@ -9,6 +9,9 @@ let countryIdToName = {}; // "ITA" -> "Italy"
 let countryToContinent = {};
 let alpha3to2 = {};
 
+// Constants
+const MAX_ZOOM = 15;
+
 // Convert ISO alpha-2 code to flag emoji
 function getFlag(alpha3) {
   const alpha2 = alpha3to2[alpha3];
@@ -300,7 +303,7 @@ async function loadMap() {
 
     const zoom = d3
       .zoom()
-      .scaleExtent([minZoom, 12])
+      .scaleExtent([minZoom, MAX_ZOOM])
       .translateExtent([
         [width * 0.1, height * 0.15],
         [width * 0.9, height * 0.85],
@@ -379,8 +382,11 @@ function zoomToCountry(feature) {
   const bCenterX = (x0 + x1) / 2;
   const bCenterY = (y0 + y1) / 2;
 
-  // Scale to fit country with padding (max 8x)
-  const scale = Math.min(8, 0.8 / Math.max(bWidth / width, bHeight / height));
+  // Scale to fit country with padding, but show some context
+  const scale = Math.min(
+    MAX_ZOOM * 0.75,
+    0.8 / Math.max(bWidth / width, bHeight / height),
+  );
 
   // Target position depends on sidebar orientation (match CSS breakpoint)
   const sidebarFromBottom = window.innerWidth <= 600;
@@ -533,7 +539,7 @@ function setupResizeHandler() {
       const isPortrait = newHeight > newWidth;
       const minZoom = isPortrait ? 1.6 * (newHeight / newWidth) : 1;
 
-      zoom.scaleExtent([minZoom, 12]).translateExtent([
+      zoom.scaleExtent([minZoom, MAX_ZOOM]).translateExtent([
         [newWidth * 0.1, newHeight * 0.15],
         [newWidth * 0.9, newHeight * 0.85],
       ]);
