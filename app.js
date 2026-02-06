@@ -176,72 +176,77 @@ async function loadMap() {
       .attr("viewBox", `0 0 ${width} ${height}`)
       .attr("preserveAspectRatio", "xMidYMid meet");
 
+    // Scale patterns relative to viewport (base unit ~6 on 960px wide screen)
+    const unit = Math.min(width, height) / 80;
+    const strokeWidth = unit / 3;
+    const activeStrokeWidth = unit / 1.7;
+
     // Define hatch pattern for visited countries
     const defs = svg.append("defs");
     const pattern = defs
       .append("pattern")
       .attr("id", "visited-hatch")
       .attr("patternUnits", "userSpaceOnUse")
-      .attr("width", 6)
-      .attr("height", 6)
+      .attr("width", unit)
+      .attr("height", unit)
       .attr("patternTransform", "rotate(45)");
     pattern
       .append("rect")
-      .attr("width", 6)
-      .attr("height", 6)
+      .attr("width", unit)
+      .attr("height", unit)
       .attr("fill", "#dfe6e9");
     pattern
       .append("line")
       .attr("x1", 0)
       .attr("y1", 0)
       .attr("x2", 0)
-      .attr("y2", 6)
+      .attr("y2", unit)
       .attr("stroke", "#b2bec3")
-      .attr("stroke-width", 2);
+      .attr("stroke-width", strokeWidth);
 
     // Hover hatch pattern
     const patternHover = defs
       .append("pattern")
       .attr("id", "visited-hatch-hover")
       .attr("patternUnits", "userSpaceOnUse")
-      .attr("width", 6)
-      .attr("height", 6)
+      .attr("width", unit)
+      .attr("height", unit)
       .attr("patternTransform", "rotate(45)");
     patternHover
       .append("rect")
-      .attr("width", 6)
-      .attr("height", 6)
+      .attr("width", unit)
+      .attr("height", unit)
       .attr("fill", "#c8d1d6");
     patternHover
       .append("line")
       .attr("x1", 0)
       .attr("y1", 0)
       .attr("x2", 0)
-      .attr("y2", 6)
+      .attr("y2", unit)
       .attr("stroke", "#949ea3")
-      .attr("stroke-width", 2);
+      .attr("stroke-width", strokeWidth);
 
     // Active hatch pattern (uses visited color family)
     const patternActive = defs
       .append("pattern")
       .attr("id", "visited-hatch-active")
       .attr("patternUnits", "userSpaceOnUse")
-      .attr("width", 6)
-      .attr("height", 6)
+      .attr("width", unit)
+      .attr("height", unit)
       .attr("patternTransform", "rotate(45)");
     patternActive
       .append("rect")
-      .attr("width", 6)
-      .attr("height", 6)
+      .attr("width", unit)
+      .attr("height", unit)
       .attr("fill", "#f4ead5");
     patternActive
       .append("line")
       .attr("x1", 0)
       .attr("y1", 0)
       .attr("x2", 0)
-      .attr("y2", 6)
+      .attr("y2", unit)
       .attr("stroke", "#c4956a")
-      .attr("stroke-width", 3.5);
+      .attr("stroke-width", activeStrokeWidth);
 
     // Group for all map content (zoom transforms this)
     const g = svg.append("g");
@@ -265,7 +270,7 @@ async function loadMap() {
 
     const path = d3.geoPath().projection(projection);
 
-    // Draw shadow layer (beneath main countries)
+    // Draw shadow layer (beneath main countries, revealed on hover via CSS lift)
     g.selectAll("path.country-shadow")
       .data(geojson.features)
       .enter()
@@ -525,7 +530,7 @@ function setupResizeHandler() {
 
       // Update zoom constraints
       const isPortrait = newHeight > newWidth;
-      const minZoom = isPortrait ? 1.25 : 1;
+      const minZoom = isPortrait ? 3 : 1;
 
       zoom.scaleExtent([minZoom, 12]).translateExtent([
         [0, 0],
