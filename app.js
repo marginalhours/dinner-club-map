@@ -35,6 +35,7 @@ async function init() {
   await loadTrips();
   await loadMap();
   setupEventListeners();
+  setupResizeHandler();
   addLegend();
 }
 
@@ -289,7 +290,7 @@ async function loadMap() {
 
     // Zoom behavior (portrait devices get higher min zoom)
     const isPortrait = height > width;
-    const minZoom = isPortrait ? 1.25 : 0.75;
+    const minZoom = isPortrait ? 1.25 : 1;
 
     const zoom = d3
       .zoom()
@@ -305,13 +306,15 @@ async function loadMap() {
 
     svg.call(zoom);
 
-    // On portrait screens, start zoomed in so map fills height
+    // On portrait screens, start zoomed and centered on Western Europe
     if (isPortrait) {
-      const initialScale = Math.max(height / width, minZoom);
+      const initialScale = Math.max(height / width, minZoom) * 1.2; // Slightly more zoom
       const initialX = -(width * initialScale - width) / 2;
+      // Shift up to center on Europe (roughly 20% up from center)
+      const initialY = -(height * 0.15);
       svg.call(
         zoom.transform,
-        d3.zoomIdentity.translate(initialX, 0).scale(initialScale),
+        d3.zoomIdentity.translate(initialX, initialY).scale(initialScale),
       );
     }
 
@@ -347,11 +350,53 @@ function handleCountryClick(event, d) {
   // Add active state to clicked country
   d3.select(event.currentTarget).classed("active", true);
 
+  // On mobile, pan to show country above the sidebar
+  const isMobile = window.innerWidth <= 600;
+  if (isMobile) {
+    panToCountryForSidebar(d);
+  }
+
   // Get trips for this country
   const trips = getTripsForCountry(countryName);
 
   // Show sidebar
   showSidebar(countryName, countryId, trips);
+}
+
+// Pan map so country is visible above the mobile sidebar (which takes 55% of screen)
+function panToCountryForSidebar(feature) {
+  const { svg, zoom, path, width, height } = mapState;
+  if (!svg) return;
+
+  const bounds = path.bounds(feature);
+  const [[x0, y0], [x1, y1]] = bounds;
+  const bCenterX = (x0 + x1) / 2;
+  const bCenterY = (y0 + y1) / 2;
+
+  // Get current transform
+  const currentTransform = d3.zoomTransform(svg.node());
+
+  // Calculate where country center is in screen coordinates
+  const screenX = currentTransform.applyX(bCenterX);
+  const screenY = currentTransform.applyY(bCenterY);
+
+  // Target: center country in the visible area (top 45% of screen)
+  const visibleHeight = height * 0.45;
+  const targetY = visibleHeight / 2;
+  const targetX = width / 2;
+
+  // Calculate new translation
+  const newX = currentTransform.x + (targetX - screenX);
+  const newY = currentTransform.y + (targetY - screenY);
+
+  // Animate pan
+  svg
+    .transition()
+    .duration(300)
+    .call(
+      zoom.transform,
+      d3.zoomIdentity.translate(newX, newY).scale(currentTransform.k),
+    );
 }
 
 // Get trips for a specific country (match by name, case-insensitive)
@@ -452,6 +497,76 @@ function formatDate(dateStr) {
     });
   } catch {
     return dateStr;
+  }
+}
+
+// Handle viewport resize (rotation, etc.)
+function setupResizeHandler() {
+  let resizeTimeout;
+  const container = document.getElementById("map-container");
+
+  const handleResize = () => {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(() => {
+      const { svg, g, zoom, path, features } = mapState;
+      if (!svg) return;
+
+      const newWidth = container.clientWidth || 960;
+      const newHeight = container.clientHeight || 500;
+
+      // Update SVG viewBox
+      svg.attr("viewBox", `0 0 ${newWidth} ${newHeight}`);
+
+      // Update zoom constraints
+      const isPortrait = newHeight > newWidth;
+      const minZoom = isPortrait ? 1.25 : 1;
+
+      zoom
+        .scaleExtent([minZoom, 12])
+        .translateExtent([
+          [0, 0],
+          [newWidth, newHeight],
+        ]);
+
+      // Update mapState
+      mapState.width = newWidth;
+      mapState.height = newHeight;
+
+      // Re-fit projection and redraw paths
+      const projection = d3.geoNaturalEarth1().fitExtent(
+        [
+          [10, 10],
+          [newWidth - 10, newHeight - 10],
+        ],
+        { type: "FeatureCollection", features },
+      );
+      const newPath = d3.geoPath().projection(projection);
+      mapState.path = newPath;
+
+      // Update all country paths
+      g.selectAll("path.country").attr("d", newPath);
+      g.selectAll("path.country-shadow").attr("d", newPath);
+
+      // Reset to initial view for new orientation
+      if (isPortrait) {
+        const initialScale = Math.max(newHeight / newWidth, minZoom) * 1.2;
+        const initialX = -(newWidth * initialScale - newWidth) / 2;
+        const initialY = -(newHeight * 0.15);
+        svg.call(
+          zoom.transform,
+          d3.zoomIdentity.translate(initialX, initialY).scale(initialScale),
+        );
+      } else {
+        svg.call(zoom.transform, d3.zoomIdentity);
+      }
+    }, 150);
+  };
+
+  // Use ResizeObserver for robust detection
+  if (window.ResizeObserver) {
+    new ResizeObserver(handleResize).observe(container);
+  } else {
+    window.addEventListener("resize", handleResize);
   }
 }
 
@@ -561,7 +676,20 @@ function closeCalendarModal() {
 }
 
 function buildCalendarContent() {
-  const monthNames = ["J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D"];
+  const monthNames = [
+    "J",
+    "F",
+    "M",
+    "A",
+    "M",
+    "J",
+    "J",
+    "A",
+    "S",
+    "O",
+    "N",
+    "D",
+  ];
 
   // Group trips by year and month (store first trip for each month)
   const tripsByYearMonth = {};
@@ -577,7 +705,9 @@ function buildCalendarContent() {
   });
 
   // Get year range
-  const years = [...new Set(tripsData.map((t) => new Date(t.date).getFullYear()))].sort();
+  const years = [
+    ...new Set(tripsData.map((t) => new Date(t.date).getFullYear())),
+  ].sort();
   if (years.length === 0) {
     return '<div class="empty-state">No trips recorded yet</div>';
   }
@@ -605,7 +735,8 @@ function buildCalendarContent() {
     for (let month = 0; month < 12; month++) {
       const key = `${year}-${month}`;
       const trip = tripsByYearMonth[key];
-      const isFuture = year === new Date().getFullYear() && month > new Date().getMonth();
+      const isFuture =
+        year === new Date().getFullYear() && month > new Date().getMonth();
 
       if (!isFuture) {
         totalMonths++;
