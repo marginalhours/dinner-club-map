@@ -54,6 +54,7 @@ html, body {
     display: flex;
     align-items: center;
     justify-content: center;
+    background: var(--ocean-color);
 }
 
 .map-container svg {
@@ -103,13 +104,6 @@ html, body {
     fill: var(--visited-color);
     filter: brightness(0.92);
     transform: translateY(-0.25vmin);
-}
-
-/* Ocean/background elements */
-.map-container svg .ocean {
-    fill: var(--ocean-color);
-    cursor: default;
-    pointer-events: none;
 }
 
 /* Sidebar */

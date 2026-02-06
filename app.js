@@ -237,14 +237,6 @@ async function loadMap() {
     // Group for all map content (zoom transforms this)
     const g = svg.append("g");
 
-    // Ocean background (large rect so it covers when zoomed out)
-    g.append("rect")
-      .attr("class", "ocean")
-      .attr("x", -width)
-      .attr("y", -height)
-      .attr("width", width * 3)
-      .attr("height", height * 3);
-
     // Create projection, draw countries, setup zoom
     const path = createProjection(width, height, geojson);
     drawCountries(g, path, geojson.features);
