@@ -350,8 +350,8 @@ function handleCountryClick(event, d) {
   // Add active state to clicked country
   d3.select(event.currentTarget).classed("active", true);
 
-  // Pan to keep country visible alongside sidebar
-  panToCountryForSidebar(d);
+  // Zoom to country, positioned for sidebar
+  zoomToCountry(d);
 
   // Get trips for this country
   const trips = getTripsForCountry(countryName);
@@ -362,31 +362,32 @@ function handleCountryClick(event, d) {
 
 // Zoom and pan to show country alongside sidebar
 // Sidebar position determined by CSS media query: <=600px = bottom, >600px = left
-function panToCountryForSidebar(feature) {
+function zoomToCountry(feature) {
   const { svg, zoom, path, width, height } = mapState;
   if (!svg) return;
 
   const bounds = path.bounds(feature);
   const [[x0, y0], [x1, y1]] = bounds;
+  const bWidth = x1 - x0;
+  const bHeight = y1 - y0;
   const bCenterX = (x0 + x1) / 2;
   const bCenterY = (y0 + y1) / 2;
 
-  // Get current transform, ensure minimum zoom for pan room
-  const currentTransform = d3.zoomTransform(svg.node());
-  const minScale = 1.5;
-  const scale = Math.max(currentTransform.k, minScale);
+  // Scale to fit country with padding (max 8x)
+  const scale = Math.min(8, 0.8 / Math.max(bWidth / width, bHeight / height));
 
   // Target position depends on sidebar orientation (match CSS breakpoint)
   const sidebarFromBottom = window.innerWidth <= 600;
+  const sidebarWidth = 400;
   let targetX, targetY;
 
   if (sidebarFromBottom) {
-    // Sidebar from bottom: center in upper half
+    // Sidebar from bottom (55% height): center in upper half
     targetX = width / 2;
-    targetY = height * 0.25;
+    targetY = height * 0.225;
   } else {
-    // Sidebar from left: center in right half
-    targetX = width * 0.75;
+    // Sidebar from left (400px): center in remaining space
+    targetX = sidebarWidth + (width - sidebarWidth) / 2;
     targetY = height / 2;
   }
 
@@ -397,8 +398,11 @@ function panToCountryForSidebar(feature) {
   // Animate zoom + pan
   svg
     .transition()
-    .duration(400)
-    .call(zoom.transform, d3.zoomIdentity.translate(translateX, translateY).scale(scale));
+    .duration(750)
+    .call(
+      zoom.transform,
+      d3.zoomIdentity.translate(translateX, translateY).scale(scale),
+    );
 }
 
 // Get trips for a specific country (match by name, case-insensitive)
@@ -879,7 +883,7 @@ function buildStatsContent() {
 
 // Discover a random unvisited country
 function discoverCountry() {
-  const { svg, g, zoom, path, features, width, height } = mapState;
+  const { svg, features } = mapState;
   if (!svg || !features.length) return;
 
   // Find unvisited countries
@@ -895,32 +899,11 @@ function discoverCountry() {
 
   // Pick random unvisited country
   const country = unvisited[Math.floor(Math.random() * unvisited.length)];
-  const bounds = path.bounds(country);
-
-  // Calculate zoom transform to fit country
-  const [[x0, y0], [x1, y1]] = bounds;
-  const bWidth = x1 - x0;
-  const bHeight = y1 - y0;
-  const bCenterX = (x0 + x1) / 2;
-  const bCenterY = (y0 + y1) / 2;
-
-  // Scale to fit with padding
-  const scale = Math.min(8, 0.8 / Math.max(bWidth / width, bHeight / height));
-  const translateX = width / 2 - bCenterX * scale;
-  const translateY = height / 2 - bCenterY * scale;
-
-  // Animate zoom
-  svg
-    .transition()
-    .duration(1000)
-    .call(
-      zoom.transform,
-      d3.zoomIdentity.translate(translateX, translateY).scale(scale),
-    );
 
   // Highlight and show sidebar
   d3.selectAll("path.country").classed("active", false);
   d3.select(`path[data-id="${country.id}"]`).classed("active", true);
+  zoomToCountry(country);
   showSidebar(country.properties.name, country.id, []);
 }
 
