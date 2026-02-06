@@ -79,7 +79,7 @@ html, body {
 
 .map-container svg .country:hover {
     fill: var(--country-hover);
-    transform: translateY(-2px);
+    transform: translateY(-0.25vmin);
 }
 
 .map-container svg .country.visited {
@@ -89,18 +89,18 @@ html, body {
 .map-container svg .country.visited:hover {
     fill: var(--visited-color);
     filter: brightness(0.95);
-    transform: translateY(-2px);
+    transform: translateY(-0.25vmin);
 }
 
 .map-container svg .country.active {
     fill: url(#visited-hatch-active);
-    transform: translateY(-2px);
+    transform: translateY(-0.25vmin);
 }
 
 .map-container svg .country.visited.active {
     fill: var(--visited-color);
     filter: brightness(0.92);
-    transform: translateY(-2px);
+    transform: translateY(-0.25vmin);
 }
 
 /* Ocean/background elements */
