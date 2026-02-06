@@ -17,6 +17,15 @@ const SIDEBAR_WIDTH = 400;
 const MOBILE_BREAKPOINT = 600;
 const ZOOM_DURATION = 750;
 const PAN_BOUNDS = { xMin: 0.1, xMax: 0.9, yMin: 0.15, yMax: 0.85 };
+const TINY_TERRITORIES = new Set([
+  "BMU", "ABW", "AIA", "ASM", "AND", "ATG", "BHR", "BRB", "BLZ", "VGB",
+  "CYM", "COM", "COK", "DMA", "FLK", "FRO", "GIB", "GRD", "GLP", "GUM",
+  "GGY", "HKG", "IMN", "JEY", "KIR", "LIE", "MAC", "MDV", "MLT", "MHL",
+  "MTQ", "MUS", "FSM", "MCO", "MSR", "NRU", "ANT", "NCL", "NIU", "NFK",
+  "MNP", "PLW", "PCN", "PRI", "REU", "SHN", "KNA", "LCA", "SPM", "VCT",
+  "WSM", "SMR", "STP", "SYC", "SGP", "SXM", "SLB", "TCA", "TKL", "TON",
+  "TTO", "TUV", "VIR", "VAT", "WLF",
+]);
 
 // Calculate zoom configuration for given dimensions
 function getZoomConfig(width, height) {
@@ -38,6 +47,96 @@ function getZoomConfig(width, height) {
           }
         : null,
   };
+}
+
+// Create hatch pattern for selected unvisited countries
+function createHatchPattern(defs, width) {
+  const unit = width / PATTERN_SCALE_DIVISOR;
+  const pattern = defs
+    .append("pattern")
+    .attr("id", "visited-hatch-active")
+    .attr("patternUnits", "userSpaceOnUse")
+    .attr("width", unit)
+    .attr("height", unit)
+    .attr("patternTransform", "rotate(45)");
+  pattern
+    .append("rect")
+    .attr("width", unit)
+    .attr("height", unit)
+    .attr("fill", "#f4ead5");
+  pattern
+    .append("line")
+    .attr("x1", 0)
+    .attr("y1", 0)
+    .attr("x2", 0)
+    .attr("y2", unit)
+    .attr("stroke", "#c4956a")
+    .attr("stroke-width", unit / 1.7);
+}
+
+// Create projection and path generator
+function createProjection(width, height, geojson) {
+  const projection = d3.geoNaturalEarth1().fitExtent(
+    [
+      [10, 10],
+      [width - 10, height - 10],
+    ],
+    geojson,
+  );
+  return d3.geoPath().projection(projection);
+}
+
+// Draw country shadows and shapes
+function drawCountries(g, path, features) {
+  // Shadow layer (revealed on hover via CSS lift)
+  g.selectAll("path.country-shadow")
+    .data(features)
+    .enter()
+    .append("path")
+    .attr("class", "country-shadow")
+    .attr("d", path);
+
+  // Country shapes
+  g.selectAll("path.country")
+    .data(features)
+    .enter()
+    .append("path")
+    .attr("class", (d) => {
+      const name = d.properties.name?.toLowerCase();
+      return `country${visitedCountries.has(name) ? " visited" : ""}`;
+    })
+    .attr("d", path)
+    .attr("data-id", (d) => d.id)
+    .attr("data-name", (d) => d.properties.name)
+    .on("click", handleCountryClick);
+}
+
+// Setup zoom behavior and return zoom instance
+function setupZoomBehavior(svg, g, width, height) {
+  const zoomConfig = getZoomConfig(width, height);
+  const zoom = d3
+    .zoom()
+    .scaleExtent([zoomConfig.minZoom, MAX_ZOOM])
+    .translateExtent(zoomConfig.translateExtent)
+    .wheelDelta((event) => -event.deltaY * 0.002)
+    .on("zoom", (event) => {
+      g.attr("transform", event.transform);
+    });
+
+  svg.call(zoom);
+
+  // Apply initial transform for portrait
+  const initialTransform = zoomConfig.getInitialTransform();
+  if (initialTransform) {
+    svg.call(
+      zoom.transform,
+      d3.zoomIdentity
+        .translate(initialTransform.x, initialTransform.y)
+        .scale(initialTransform.scale),
+    );
+  }
+
+  return zoom;
 }
 
 // Convert ISO alpha-2 code to flag emoji
@@ -119,75 +218,8 @@ async function loadMap() {
     const geojson = await response.json();
 
     // Filter out tiny territories that cause click issues
-    const tinyTerritories = new Set([
-      "BMU",
-      "ABW",
-      "AIA",
-      "ASM",
-      "AND",
-      "ATG",
-      "BHR",
-      "BRB",
-      "BLZ",
-      "VGB",
-      "CYM",
-      "COM",
-      "COK",
-      "DMA",
-      "FLK",
-      "FRO",
-      "GIB",
-      "GRD",
-      "GLP",
-      "GUM",
-      "GGY",
-      "HKG",
-      "IMN",
-      "JEY",
-      "KIR",
-      "LIE",
-      "MAC",
-      "MDV",
-      "MLT",
-      "MHL",
-      "MTQ",
-      "MUS",
-      "FSM",
-      "MCO",
-      "MSR",
-      "NRU",
-      "ANT",
-      "NCL",
-      "NIU",
-      "NFK",
-      "MNP",
-      "PLW",
-      "PCN",
-      "PRI",
-      "REU",
-      "SHN",
-      "KNA",
-      "LCA",
-      "SPM",
-      "VCT",
-      "WSM",
-      "SMR",
-      "STP",
-      "SYC",
-      "SGP",
-      "SXM",
-      "SLB",
-      "TCA",
-      "TKL",
-      "TON",
-      "TTO",
-      "TUV",
-      "VIR",
-      "VAT",
-      "WLF",
-    ]);
     geojson.features = geojson.features.filter(
-      (f) => !tinyTerritories.has(f.id),
+      (f) => !TINY_TERRITORIES.has(f.id),
     );
 
     // Build name mappings from GeoJSON
@@ -207,31 +239,9 @@ async function loadMap() {
       .attr("viewBox", `0 0 ${width} ${height}`)
       .attr("preserveAspectRatio", "xMidYMid meet");
 
-    // Scale pattern relative to viewport width (map scales with width since it's landscape)
-    const unit = width / PATTERN_SCALE_DIVISOR;
-
-    // Hatch pattern for selected unvisited countries
+    // Create pattern and map group
     const defs = svg.append("defs");
-    const patternActive = defs
-      .append("pattern")
-      .attr("id", "visited-hatch-active")
-      .attr("patternUnits", "userSpaceOnUse")
-      .attr("width", unit)
-      .attr("height", unit)
-      .attr("patternTransform", "rotate(45)");
-    patternActive
-      .append("rect")
-      .attr("width", unit)
-      .attr("height", unit)
-      .attr("fill", "#f4ead5");
-    patternActive
-      .append("line")
-      .attr("x1", 0)
-      .attr("y1", 0)
-      .attr("x2", 0)
-      .attr("y2", unit)
-      .attr("stroke", "#c4956a")
-      .attr("stroke-width", unit / 1.7);
+    createHatchPattern(defs, width);
 
     // Group for all map content (zoom transforms this)
     const g = svg.append("g");
@@ -244,63 +254,10 @@ async function loadMap() {
       .attr("width", width * 3)
       .attr("height", height * 3);
 
-    // Set up projection
-    const projection = d3.geoNaturalEarth1().fitExtent(
-      [
-        [10, 10],
-        [width - 10, height - 10],
-      ],
-      geojson,
-    );
-
-    const path = d3.geoPath().projection(projection);
-
-    // Draw shadow layer (beneath main countries, revealed on hover via CSS lift)
-    g.selectAll("path.country-shadow")
-      .data(geojson.features)
-      .enter()
-      .append("path")
-      .attr("class", "country-shadow")
-      .attr("d", path);
-
-    // Draw countries
-    g.selectAll("path.country")
-      .data(geojson.features)
-      .enter()
-      .append("path")
-      .attr("class", (d) => {
-        const name = d.properties.name?.toLowerCase();
-        const isVisited = visitedCountries.has(name);
-        return `country${isVisited ? " visited" : ""}`;
-      })
-      .attr("d", path)
-      .attr("data-id", (d) => d.id)
-      .attr("data-name", (d) => d.properties.name)
-      .on("click", handleCountryClick);
-
-    // Zoom behavior
-    const zoomConfig = getZoomConfig(width, height);
-    const zoom = d3
-      .zoom()
-      .scaleExtent([zoomConfig.minZoom, MAX_ZOOM])
-      .translateExtent(zoomConfig.translateExtent)
-      .wheelDelta((event) => -event.deltaY * 0.002)
-      .on("zoom", (event) => {
-        g.attr("transform", event.transform);
-      });
-
-    svg.call(zoom);
-
-    // On portrait screens, start at min zoom (map fills height) centered
-    const initialTransform = zoomConfig.getInitialTransform();
-    if (initialTransform) {
-      svg.call(
-        zoom.transform,
-        d3.zoomIdentity
-          .translate(initialTransform.x, initialTransform.y)
-          .scale(initialTransform.scale),
-      );
-    }
+    // Create projection, draw countries, setup zoom
+    const path = createProjection(width, height, geojson);
+    drawCountries(g, path, geojson.features);
+    const zoom = setupZoomBehavior(svg, g, width, height);
 
     // Store references for discover feature
     mapState = {
