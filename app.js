@@ -360,9 +360,8 @@ function handleCountryClick(event, d) {
   showSidebar(countryName, countryId, trips);
 }
 
-// Pan map so country is visible alongside sidebar
-// Portrait (<=600px): sidebar from bottom, center country in upper half
-// Landscape/desktop (>600px): sidebar from left, center country in right half
+// Zoom and pan to show country alongside sidebar
+// Sidebar position determined by CSS media query: <=600px = bottom, >600px = left
 function panToCountryForSidebar(feature) {
   const { svg, zoom, path, width, height } = mapState;
   if (!svg) return;
@@ -372,18 +371,16 @@ function panToCountryForSidebar(feature) {
   const bCenterX = (x0 + x1) / 2;
   const bCenterY = (y0 + y1) / 2;
 
-  // Get current transform
+  // Get current transform, ensure minimum zoom for pan room
   const currentTransform = d3.zoomTransform(svg.node());
+  const minScale = 1.5;
+  const scale = Math.max(currentTransform.k, minScale);
 
-  // Calculate where country center is in screen coordinates
-  const screenX = currentTransform.applyX(bCenterX);
-  const screenY = currentTransform.applyY(bCenterY);
-
-  // Target position depends on sidebar orientation
-  const isPortrait = window.innerWidth <= 600;
+  // Target position depends on sidebar orientation (match CSS breakpoint)
+  const sidebarFromBottom = window.innerWidth <= 600;
   let targetX, targetY;
 
-  if (isPortrait) {
+  if (sidebarFromBottom) {
     // Sidebar from bottom: center in upper half
     targetX = width / 2;
     targetY = height * 0.25;
@@ -393,18 +390,15 @@ function panToCountryForSidebar(feature) {
     targetY = height / 2;
   }
 
-  // Calculate new translation
-  const newX = currentTransform.x + (targetX - screenX);
-  const newY = currentTransform.y + (targetY - screenY);
+  // Calculate translation to put country center at target screen position
+  const translateX = targetX - bCenterX * scale;
+  const translateY = targetY - bCenterY * scale;
 
-  // Animate pan
+  // Animate zoom + pan
   svg
     .transition()
-    .duration(300)
-    .call(
-      zoom.transform,
-      d3.zoomIdentity.translate(newX, newY).scale(currentTransform.k),
-    );
+    .duration(400)
+    .call(zoom.transform, d3.zoomIdentity.translate(translateX, translateY).scale(scale));
 }
 
 // Get trips for a specific country (match by name, case-insensitive)
