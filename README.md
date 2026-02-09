@@ -41,4 +41,3 @@ trips:
 
 ## Todo
 
-- [ ] Add back in missing tiny countries (that don't break the map)
