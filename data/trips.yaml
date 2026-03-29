@@ -136,3 +136,9 @@ trips:
     restaurant: Kipferl
     maps_url: https://maps.app.goo.gl/yMeTsZ7jKchEEsjU8
     notes: "What game would you back yourself to win at an imaginary casino?"
+
+  - country: morocco
+    date: "2026-03-27"
+    restaurant: "Bab Mansour"
+    maps_url: https://maps.app.goo.gl/YgAgGrmJBhrR1t4o9
+    notes: "Went to Baudry Greene for cocktails afterwards"
