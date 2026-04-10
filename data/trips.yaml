@@ -142,3 +142,10 @@ trips:
     restaurant: "Bab Mansour"
     maps_url: https://maps.app.goo.gl/YgAgGrmJBhrR1t4o9
     notes: "Went to Baudry Greene for cocktails afterwards"
+
+  - country: argentina
+    date: "2026-04-10"
+    restaurant: "Casa Malevo"
+    maps_url: https://maps.app.goo.gl/VHHhzZPAVQfmXuNa9
+    notes: "What's your most right-wing opinion?"
+
