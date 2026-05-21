@@ -149,3 +149,9 @@ trips:
     maps_url: https://maps.app.goo.gl/VHHhzZPAVQfmXuNa9
     notes: "What's your most right-wing opinion?"
 
+  - country: ethiopia
+    date: "2026-05-22"
+    restaurant: "Adam's Ethiopian Restaurant"
+    maps_url: https://maps.app.goo.gl/2SDxVjpYq3ndnXZF6
+    notes: "How many crime-fighting dogs can you name?" 
+
